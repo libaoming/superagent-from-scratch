@@ -3,13 +3,13 @@
 > 每次 session 第一个读的文件。收尾必更新本文件。
 
 ## 一句话状态
-2026-07-06 **S1 收口 → tag sfs-s1（2/8 passing）**：笔记 notes/02 + 真实 E2E（ClaudeCLILLM 走 claude -p，PRD 验收 4 达成）+ 对抗审查 3 红全修（BashTool cwd 谎言 / C1 机器闸门 tests/test_constraints.py / ToolMessage 残留词）；全量 19 passed 无 key 同绿，src 188 行。仓库公开：https://github.com/libaoming/superagent-from-scratch。F01 的 Deviations D1-D3 见 M1/PROGRESS.md 待核对。
+2026-07-06 **F03_middleware_protocol passing（3/8，S2 进行中）**：src/middleware.py（三钩子协议 + Interrupt，28 行）+ loop 挂载三条链（before 注册序/after 逆序/wrap 洋葱，终止条件 3 上线），`pytest tests/test_s2_middleware.py -q` 7 passed、全量 26 passed（S1 零改动同绿 = C4 实证）；src 245 行；D1 清账。仓库公开：https://github.com/libaoming/superagent-from-scratch（S1 已 tag sfs-s1）。
 
 ## 下次入口
 1. 读本文件 → 读 `M1/PROGRESS.md`（含「对抗审查遗留」🟡 清单）
 2. 跑 `bash M1/init.sh` 确认环境
-3. 当前应做：**F03_middleware_protocol**（S2 开工）——先造/复用 fixture → `tests/test_s2_middleware.py` 先红 → `src/middleware.py` + loop 挂载（读 SPEC #middleware：before 注册序 / after 逆序 / wrap 洋葱；llm 走构造注入 Q1=A）。⚠️ C4/C7 冻结从 S2 起算：run() 以关键字参数补 `middlewares`（D1 清账），三协议签名从此不动
-4. S2 收口时顺路：补 S2 拆解笔记 notes/03 + 考虑清掉「对抗审查遗留」里便宜的几条
+3. 当前应做：**F04_core_middlewares**——⚠️ fixture 先行：verify 引用的 `fixtures/fake_llm/oversize_tool_output.json` 不存在，先造（还需 Summarization 场景 fixture，注意「录制=全局调用序」：压缩调用也消耗同一 responses 序列）→ `tests/test_s2_core_mw.py` 先红 → `src/middlewares/`（ToolOutputBudget 截断 / ToolErrorHandling 异常转错误文本 / Summarization 构造注入 llm 压缩旧消息，SPEC #middleware + Q1=A）
+4. F04 绿后 = S2 代码侧完成 → notes/03 拆解笔记 → 对抗审查 → `git tag sfs-s2`；顺路考虑清「对抗审查遗留」便宜几条
 
 ## 关键技术事实
 - 技术栈：Python 3.12 + uv + pytest；**零框架依赖**（不用 LangChain/LangGraph，loop 自己写，直接调 LLM API）

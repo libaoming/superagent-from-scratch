@@ -44,9 +44,9 @@
     {
       "id": "F03_middleware_protocol",
       "slice": "S2",
-      "status": "pending",
+      "status": "passing",
       "verify": {"type": "command", "run": "uv run pytest tests/test_s2_middleware.py -q", "fixture": "fixtures/fake_llm/"},
-      "verify_notes": "",
+      "verify_notes": "2026-07-06 verify 真跑：uv run pytest tests/test_s2_middleware.py -q → 7 passed；全量 26 passed（S1 19 条零改动同绿 = C4 回归实证），env -u ANTHROPIC_API_KEY 同绿。覆盖：基类三钩子默认 no-op、C7 签名断言、before 注册序 + after 逆序（栈帧对称）、wrap 洋葱先注册最外层、wrap 可改写工具结果、Interrupt 立即收口（终止条件 3，先于工具执行，FakeLLM 余量证明未再进模型）、不传 middlewares 时 S1 行为原样。fixture 全复用 S1。src/middleware.py 28 行 + loop.py 78 行（预算内），D1 清账（run() 补 middlewares 关键字参数）",
       "related": {"specs": ["SPEC.md#middleware"], "code": ["src/middleware.py", "src/loop.py"], "docs": ["notes/01-deerflow-architecture.md"]},
       "affected": "middleware 协议（before_model / after_model / wrap_tool_call）+ 按注册顺序组装进 loop",
       "out_of_scope": "不复刻 deer-flow 全部 28 个 middleware，只做协议 + 挂载点",

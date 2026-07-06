@@ -2,8 +2,8 @@
 
 | 字段 | 值 |
 |---|---|
-| active_feature | （无——S1 已收口打 tag sfs-s1；下一个 F03_middleware_protocol，注意 C4/C7 冻结从 S2 起算） |
-| slice | S1 |
+| active_feature | F03_middleware_protocol |
+| slice | S2 |
 | 更新 | 2026-07-06 |
 
 ## Next Candidates
@@ -20,7 +20,7 @@
 - （无）
 
 ## Deviations（偏离 SPEC/计划的决定 · 逐条向用户核对后清账）
-- **D1（F01）**：S1 的 `run()` 签名暂不含 `middlewares` 参数（SPEC #loop 伪代码含三条 middleware 链）。理由：Middleware 协议是 F03 交付物，S1 加空链 = 无消费者的扩展点（反模式 4）；C4 签名冻结从 S2 起算，S2 以关键字参数补入不破坏 S1 导入。
+- ~~**D1（F01）**~~ ✅ 2026-07-06 随 F03 清账：`run()` 已以关键字参数补入 `middlewares`，S1 测试零改动同绿。
 - **D2（F01）**：State 只含 `messages` + `turn_count`，SPEC 数据模型里标注 "S5:" 的 `todos`/`goal` 字段推迟到 S5 落地（字段纪律：必须被切片测试断言用到）。
 - **D3（F01）**：AnthropicLLM 默认 `model="claude-opus-4-8"`、`max_tokens=16000`、不传 thinking/采样参数（claude-api skill 当前指引；SPEC 未规定默认值）。
 
@@ -52,3 +52,5 @@
 - [2026-07-06 11:25] id 请自造且不重复（e1、e2…）。
 - [2026-07-06 11:25] id 请自造且不重复（e1、e2…）。
 - [2026-07-06 11:26] 继续
+- [2026-07-06 11:32] 一句话结论：代码主体对 SPEC 忠实度高、测试纪律好；三个真发现集中在「说了但没做」——BashTool 的 cwd 承诺、C1 的机器闸门、features.json 的 LangChain 残留
+- [2026-07-06 14:22] - **Exploring alternative interfaces** — see [DESIGN-IT-TWICE.md](DESIGN-IT-TWICE.md): spin up paral
