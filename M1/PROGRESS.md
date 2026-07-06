@@ -4,7 +4,7 @@
 |---|---|
 | active_feature | （无——F01 已收口，下一个 F02_real_tools） |
 | slice | S1 |
-| 更新 | 2026-07-04 |
+| 更新 | 2026-07-06 |
 
 ## Next Candidates
 - F02_real_tools（S1）—— bash/read_file/write_file 三真实工具 + research_task.json 集成
@@ -18,11 +18,16 @@
 - **D3（F01）**：AnthropicLLM 默认 `model="claude-opus-4-8"`、`max_tokens=16000`、不传 thinking/采样参数（claude-api skill 当前指引；SPEC 未规定默认值）。
 
 ## Session Log（倒序）
+### 2026-07-06
+- （上午）**开源落地**：`git init` + 首 commit（26 文件/1795 行）→ `gh repo create` 私有建仓推送 → 用户下令转 **public** → 补 MIT LICENSE + 双语 README（含架构图/五切片导读/deer-flow 对照表，PRD 验收 5 部分交付；GitHub License API 确认识别 MIT）。`.gitignore` 排除 .venv/缓存/settings.local.json。STATUS.md 建仓待办清账。
+- （上午）S1 学习手册 artifact 发布（按 SPEC v1 模版重建——原 f01 页面文件随 tmp 清理丢失，token 取自 Auto Memory）：https://claude.ai/code/artifact/14533136-5bf1-4224-88eb-d100052bfee9
+- （上午）harness 进度速查（1/8 passing，F02 应做）；定下一步 = F02_real_tools（先清本流水）。
 ### 2026-07-04
 - （晚间）F01 学习手册 artifact 发布（含循环步进器/自测6题/30min动手路径），已按下午 SPEC 页模版对齐（ivory+clay/宋体标题/16px/800px），模版偏好存入 Auto Memory：https://claude.ai/code/artifact/72f95524-2b11-4668-8d52-0b27ff26e2aa
 - （晚间）**F01_agent_loop 完成 → passing**：C5 顺序走完——fixture 5 个（natural_close/echo_roundtrip/parallel_tools/endless_tool_calls/research_task + workspace/data.md）→ test_s1_loop.py 先红（ModuleNotFoundError）→ src/llm.py + src/loop.py 实现 → 7 passed（无 API key 环境复跑同绿）。pyproject.toml 落地（uv，C2 依赖仅 anthropic+pyyaml）。src 共 115 行。产生 Deviations D1-D3 待用户核对。
 - （晚间）harness 进度速查（0/8 pending，F01 应做）→ 用户下令开工 F01。
 - （下午→傍晚）打开 SPEC review；artifacts 页面链接确认；对齐 memory-kit 理解；四决策拍板（1A 2A 3A 4B）+ 拓展性规则落地进 SPEC/PRD/CLAUDE.md。
+- （晚间收尾散记，自流水归并）F01 手册 20:02 版被用户否掉（「6点后的版本我不喜欢」）→ 排查出与下午 SPEC 页字号/版式不一致 → 按「按下午的模版即可」重发对齐（即上条 artifact 模版偏好的由来）；期间还聊了「plan-推理-code vs loop」话题（未形成决定）；20:23 关机收工。
 - 项目脚手架完成（4 层骨架）。下一步：文档先行填 PRD/SPEC/architecture。
 
 ## 如果…就…
@@ -31,16 +36,4 @@
 - 如果要核查线上/读大文件 → 派 `.claude/agents/superagent-from-scratch-ops.md` 子 agent，别在主 context 拉原始输出
 
 ## 🤖 增量流水（待整理）
-- [2026-07-04 18:51] 当前项目进展 把spec 文件打开
-- [2026-07-04 18:53] 下午 artifacts 的页面不是有链接吗
-- [2026-07-04 18:56] 发一个新的
-- [2026-07-04 19:41] 匹配我的 memory-kit 更好的理解
-- [2026-07-04 19:58] 输出一张紧凑的进度表 + 一句「下一步」。如果当前目录没有 features.json，直接说这不是 harness 项目，并提示可用 `/harness-kit:harness-init` 初始化。
-- [2026-07-04 20:02] 6点后的版本 我不喜欢  你排查下
-- [2026-07-04 20:07] - **WIF auth: unset `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, and `ANTHROPIC_PROFILE`.** `ANTHROP
-- [2026-07-04 20:12] - Spend your boldness in one place; keep everything around it quiet. If the accent fights the ground
-- [2026-07-04 20:13] plan-推理 -code vs loop
-- [2026-07-04 20:19] 按下午的模版即可 不用新建模版
-- [2026-07-04 20:23] 关机 回家
-- [2026-07-06 09:22] 输出一张紧凑的进度表 + 一句「下一步」。如果当前目录没有 features.json，直接说这不是 harness 项目，并提示可用 `/harness-kit:harness-init` 初始化。
-- [2026-07-06 09:26] - Spend your boldness in one place; keep everything around it quiet. If the accent fights the ground
+<!-- Stop hook 自动追加区。2026-07-06 已整理 16 条：07-04/07-06 各批次归并进上方 Session Log；skill prompt 片段（进度表指令×2、设计 skill 文本×2、WIF auth 行）判为 hook 误抓噪声丢弃。 -->
