@@ -9,8 +9,8 @@
 1. 读本文件 → 读 `M1/PROGRESS.md`
 2. 跑 `bash M1/init.sh` 确认环境
 3. 当前应做：**F02_real_tools**——写 `tests/test_s1_tools.py`（先红：bash/read_file/write_file 三真实工具契约 + research_task.json 驱动的 FakeLLM×真工具集成）→ 实现 `src/tools.py`（读 SPEC #tools：bash 超时 60s、非零退出码回文本不抛异常；read_file 带行号同 cat -n）
-4. F02 绿后 = S1 代码侧完成 → 补 `notes/` S1 拆解笔记 + `scripts/e2e_s1.py`（ClaudeCLILLM 真实 E2E，PRD 验收 4）→ 对抗审查 → `git tag sfs-s1`（tag 前需先 `git init`，待用户指令）
-5. 待用户指令：`git init` + GitHub 建仓（用户要开源，未明确让动 git）
+4. F02 绿后 = S1 代码侧完成 → 补 `notes/` S1 拆解笔记 + `scripts/e2e_s1.py`（ClaudeCLILLM 真实 E2E，PRD 验收 4）→ 对抗审查 → `git tag sfs-s1`
+5. ✅ 2026-07-06 已 `git init` + 建仓推送：https://github.com/libaoming/superagent-from-scratch（**private**，开源前需补 README/LICENSE 再转 public）
 
 ## 关键技术事实
 - 技术栈：Python 3.12 + uv + pytest；**零框架依赖**（不用 LangChain/LangGraph，loop 自己写，直接调 LLM API）
