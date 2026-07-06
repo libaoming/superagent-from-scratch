@@ -4,7 +4,7 @@
 
 [中文版 README](README.zh-CN.md) · Teardown notes (Chinese) in [`notes/`](notes/)
 
-> 🚧 **Work in progress** — slice S1 is being built in public (loop core done, real tools next). Follow along: each slice ships with passing offline tests and a teardown note.
+> 🚧 **Work in progress** — built in public, slice by slice. S1 is done (tag `sfs-s1`); S2 is next. Each slice ships with passing offline tests and a teardown note.
 
 ## Why this exists
 
@@ -54,7 +54,7 @@ Linear progression — each slice is a self-contained lesson with tests and a no
 
 | Slice | What you build | What you learn | Status |
 |---|---|---|---|
-| **S1** | The agent loop + LLM seam + 3 real tools | An agent is a while loop. The three (and only three) termination conditions. Why `tool_result` goes back as a `user` message. | 🔨 in progress |
+| **S1** | The agent loop + LLM seam + 3 real tools | An agent is a while loop. The three (and only three) termination conditions. Why `tool_result` goes back as a `user` message. | ✅ done ([note](notes/02-s1-agent-loop.md), tag `sfs-s1`) |
 | **S2** | Middleware protocol (`before_model` / `after_model` / `wrap_tool_call`) + 3 built-ins | Cross-cutting concerns decoupled from the loop — the real architecture of modern harnesses. Output budgets, error recovery, summarization. | ⬜ |
 | **S3** | `task` tool + subagent delegation | Context isolation is the lifeline of long tasks. A subagent is not a new mechanism — it's the same loop, recursed, with a fresh context that returns only conclusions. | ⬜ |
 | **S4** | Skills system (SKILL.md + slash activation) | The token economics of hot-pluggable capabilities: metadata is cheap (always-on), body is expensive (on-demand). | ⬜ |
