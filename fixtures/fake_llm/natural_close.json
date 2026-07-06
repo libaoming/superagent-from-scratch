@@ -1,0 +1,6 @@
+{
+  "description": "自然收口：首条响应就是纯文本，无 tool_use，loop 应立即返回（终止条件 1/3）",
+  "responses": [
+    {"content": [{"type": "text", "text": "你好，这个问题不需要用工具，直接回答：42。"}]}
+  ]
+}

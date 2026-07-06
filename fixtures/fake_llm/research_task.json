@@ -1,0 +1,11 @@
+{
+  "description": "S1 canonical 场景：研究任务→bash 列目录→read_file 读资料→给出最终结论（喂 F02 集成测试与 S1 收口 E2E 对照）",
+  "responses": [
+    {"content": [
+      {"type": "text", "text": "我先看看工作区里有什么文件。"},
+      {"type": "tool_use", "id": "r1", "name": "bash", "input": {"command": "ls fixtures/workspace"}}
+    ]},
+    {"content": [{"type": "tool_use", "id": "r2", "name": "read_file", "input": {"path": "fixtures/workspace/data.md"}}]},
+    {"content": [{"type": "text", "text": "结论：deer-flow 的 harness 核心由 lead agent 循环（556 行）+ 28 个 middleware + task_tool 委派（533 行）构成，本仓库以 ≤1500 行复刻其教学核心。"}]}
+  ]
+}

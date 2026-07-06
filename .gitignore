@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+*.egg-info/
+
+# macOS
+.DS_Store
+
+# Claude Code 项目本地配置（L3 hooks 配置，local 不入 git）
+.claude/settings.local.json
+
+# 环境变量
+.env

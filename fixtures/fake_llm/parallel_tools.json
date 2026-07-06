@@ -1,0 +1,10 @@
+{
+  "description": "同一响应含两个 tool_use：全部结果必须回填进紧随其后的同一条 user 消息（Anthropic API 硬约束，新手常踩）",
+  "responses": [
+    {"content": [
+      {"type": "tool_use", "id": "p1", "name": "echo", "input": {"text": "alpha"}},
+      {"type": "tool_use", "id": "p2", "name": "echo", "input": {"text": "beta"}}
+    ]},
+    {"content": [{"type": "text", "text": "并行两个回显完成。"}]}
+  ]
+}

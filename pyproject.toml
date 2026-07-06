@@ -1,0 +1,17 @@
+[project]
+name = "superagent-from-scratch"
+version = "0.1.0"
+description = "教学向极简 SuperAgent harness —— 千行级复刻 deer-flow 核心架构"
+requires-python = ">=3.12"
+# C2：运行时依赖仅 anthropic + pyyaml
+dependencies = [
+    "anthropic>=0.40",
+    "pyyaml>=6",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

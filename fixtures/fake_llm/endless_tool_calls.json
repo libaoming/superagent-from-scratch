@@ -1,0 +1,9 @@
+{
+  "description": "永不收口的模型：连续 tool_use 用于测 max_turns 熔断（终止条件 2/3）。录 4 条，测试设 max_turns=2，多余的不该被消费",
+  "responses": [
+    {"content": [{"type": "tool_use", "id": "e1", "name": "echo", "input": {"text": "loop-1"}}]},
+    {"content": [{"type": "tool_use", "id": "e2", "name": "echo", "input": {"text": "loop-2"}}]},
+    {"content": [{"type": "tool_use", "id": "e3", "name": "echo", "input": {"text": "loop-3"}}]},
+    {"content": [{"type": "tool_use", "id": "e4", "name": "echo", "input": {"text": "loop-4"}}]}
+  ]
+}
