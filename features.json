@@ -33,9 +33,9 @@
     {
       "id": "F02_real_tools",
       "slice": "S1",
-      "status": "pending",
+      "status": "passing",
       "verify": {"type": "command", "run": "uv run pytest tests/test_s1_tools.py -q", "fixture": "fixtures/workspace/"},
-      "verify_notes": "",
+      "verify_notes": "2026-07-06 verify 真跑：uv run pytest tests/test_s1_tools.py -q → 9 passed；全量 16 passed，env -u ANTHROPIC_API_KEY 复跑同绿（C3）。覆盖：三工具 schema 形状（缝③）、bash stdout/非零退出码回文本含 stderr/超时回文本/默认 60s、read_file cat -n 行号/缺文件外抛、write_file 真落盘+确认文本、research_task.json 集成（FakeLLM×真工具，turn_count=2）。src/tools.py 72 行（预算 200 内），src 共 187 行",
       "related": {"specs": ["SPEC.md#tools"], "code": ["src/tools.py"], "docs": []},
       "affected": "bash / read_file / write_file 三个真实工具：schema 声明 + 执行 + 结果回填 ToolMessage",
       "out_of_scope": "不做 sandbox 虚拟路径映射；不做 str_replace；bash 超时简单处理",

@@ -3,14 +3,13 @@
 > 每次 session 第一个读的文件。收尾必更新本文件。
 
 ## 一句话状态
-2026-07-04 **F01_agent_loop passing（1/8）**：fixture 先行 → 测试先红 → src/llm.py（LLMClient 协议 + FakeLLM + AnthropicLLM）+ src/loop.py（run 循环，终止条件 1/2）实现绿，`pytest tests/test_s1_loop.py -q` 7 passed（无 API key 复跑同绿）；pyproject（uv）落地；src 115 行。Deviations D1-D3 见 M1/PROGRESS.md 待核对。
+2026-07-06 **F02_real_tools passing（2/8，S1 代码侧完成）**：src/tools.py（bash/read_file/write_file，72 行）实现绿，`pytest tests/test_s1_tools.py -q` 9 passed、全量 16 passed（无 API key 复跑同绿）；src 共 187 行。仓库已公开：https://github.com/libaoming/superagent-from-scratch（MIT + 双语 README）。F01 的 Deviations D1-D3 见 M1/PROGRESS.md 待核对。
 
 ## 下次入口
 1. 读本文件 → 读 `M1/PROGRESS.md`
 2. 跑 `bash M1/init.sh` 确认环境
-3. 当前应做：**F02_real_tools**——写 `tests/test_s1_tools.py`（先红：bash/read_file/write_file 三真实工具契约 + research_task.json 驱动的 FakeLLM×真工具集成）→ 实现 `src/tools.py`（读 SPEC #tools：bash 超时 60s、非零退出码回文本不抛异常；read_file 带行号同 cat -n）
-4. F02 绿后 = S1 代码侧完成 → 补 `notes/` S1 拆解笔记 + `scripts/e2e_s1.py`（ClaudeCLILLM 真实 E2E，PRD 验收 4）→ 对抗审查 → `git tag sfs-s1`
-5. ✅ 2026-07-06 已 `git init` + 建仓推送：https://github.com/libaoming/superagent-from-scratch（**private**，开源前需补 README/LICENSE 再转 public）
+3. 当前应做：**S1 收口序列**——① 补 `notes/02` S1 拆解笔记（标准结构：deer-flow 怎么做 → 我怎么简化 → 为什么 → 拓展练习 1-2 道）→ ② 写 `scripts/e2e_s1.py`（ClaudeCLILLM 薄适配器走 `claude -p`，真实研究任务 E2E，PRD 验收 4；scripts/ 不占 src 行数预算）→ ③ 对抗审查（fresh 子 agent 对照 SPEC 锚点）→ ④ `git tag sfs-s1` 推送
+4. S1 收口后 → F03_middleware_protocol（S2 开工，注意 C4/C7：loop 签名与三协议冻结从 S2 起算）
 
 ## 关键技术事实
 - 技术栈：Python 3.12 + uv + pytest；**零框架依赖**（不用 LangChain/LangGraph，loop 自己写，直接调 LLM API）
