@@ -3,13 +3,13 @@
 > 每次 session 第一个读的文件。收尾必更新本文件。
 
 ## 一句话状态
-2026-07-06 **F02_real_tools passing（2/8，S1 代码侧完成）**：src/tools.py（bash/read_file/write_file，72 行）实现绿，`pytest tests/test_s1_tools.py -q` 9 passed、全量 16 passed（无 API key 复跑同绿）；src 共 187 行。仓库已公开：https://github.com/libaoming/superagent-from-scratch（MIT + 双语 README）。F01 的 Deviations D1-D3 见 M1/PROGRESS.md 待核对。
+2026-07-06 **S1 收口 → tag sfs-s1（2/8 passing）**：笔记 notes/02 + 真实 E2E（ClaudeCLILLM 走 claude -p，PRD 验收 4 达成）+ 对抗审查 3 红全修（BashTool cwd 谎言 / C1 机器闸门 tests/test_constraints.py / ToolMessage 残留词）；全量 19 passed 无 key 同绿，src 188 行。仓库公开：https://github.com/libaoming/superagent-from-scratch。F01 的 Deviations D1-D3 见 M1/PROGRESS.md 待核对。
 
 ## 下次入口
-1. 读本文件 → 读 `M1/PROGRESS.md`
+1. 读本文件 → 读 `M1/PROGRESS.md`（含「对抗审查遗留」🟡 清单）
 2. 跑 `bash M1/init.sh` 确认环境
-3. 当前应做：**S1 收口序列**——① 补 `notes/02` S1 拆解笔记（标准结构：deer-flow 怎么做 → 我怎么简化 → 为什么 → 拓展练习 1-2 道）→ ② 写 `scripts/e2e_s1.py`（ClaudeCLILLM 薄适配器走 `claude -p`，真实研究任务 E2E，PRD 验收 4；scripts/ 不占 src 行数预算）→ ③ 对抗审查（fresh 子 agent 对照 SPEC 锚点）→ ④ `git tag sfs-s1` 推送
-4. S1 收口后 → F03_middleware_protocol（S2 开工，注意 C4/C7：loop 签名与三协议冻结从 S2 起算）
+3. 当前应做：**F03_middleware_protocol**（S2 开工）——先造/复用 fixture → `tests/test_s2_middleware.py` 先红 → `src/middleware.py` + loop 挂载（读 SPEC #middleware：before 注册序 / after 逆序 / wrap 洋葱；llm 走构造注入 Q1=A）。⚠️ C4/C7 冻结从 S2 起算：run() 以关键字参数补 `middlewares`（D1 清账），三协议签名从此不动
+4. S2 收口时顺路：补 S2 拆解笔记 notes/03 + 考虑清掉「对抗审查遗留」里便宜的几条
 
 ## 关键技术事实
 - 技术栈：Python 3.12 + uv + pytest；**零框架依赖**（不用 LangChain/LangGraph，loop 自己写，直接调 LLM API）

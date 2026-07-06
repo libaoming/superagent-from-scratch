@@ -141,7 +141,7 @@ task(description: str, prompt: str) -> str   # 返回 = subagent 最终文本，
 
 | # | 约束 | 检验方式 |
 |---|---|---|
-| C1 | src/ 总行数 ≤ 1,500（预算：loop 150 / llm 80 / tools 200 / middleware 协议 60 / 三内置件 200 / subagent 100 / skills 120 / goal+todo+clarification 250 / 杂项 240） | CI 脚本 `wc -l` 断言 |
+| C1 | src/ 总行数 ≤ 1,500（预算：loop 150 / llm 80 / tools 200 / middleware 协议 60 / 三内置件 200 / subagent 100 / skills 120 / goal+todo+clarification 250 / 杂项 240） | `tests/test_constraints.py` pytest 断言（2026-07-06 落地：无 CI，pytest 即每次必跑的闸门） |
 | C2 | 运行时依赖仅 `anthropic` + `pyyaml` | pyproject 审查 |
 | C3 | pytest 全程无网络：唯一接缝 = LLMClient，工具真实执行 | 测试不设 API key 环境跑通 |
 | C4 | S2 起 loop 模块公共签名冻结（middleware 加能力不改 loop） | S2 测试直接复用 S1 的 loop 导入 |

@@ -2,12 +2,19 @@
 
 | 字段 | 值 |
 |---|---|
-| active_feature | （无——F02 已收口，S1 代码侧完成；下一步 S1 收口序列：笔记 + e2e_s1.py + tag） |
+| active_feature | （无——S1 已收口打 tag sfs-s1；下一个 F03_middleware_protocol，注意 C4/C7 冻结从 S2 起算） |
 | slice | S1 |
 | 更新 | 2026-07-06 |
 
 ## Next Candidates
-- F02_real_tools（S1）—— bash/read_file/write_file 三真实工具 + research_task.json 集成
+- F03_middleware_protocol（S2）—— before_model/after_model/wrap_tool_call 协议 + 挂载进 loop（D1 清账时机：run() 以关键字参数补 middlewares）
+
+## 对抗审查遗留（S1 审查 2026-07-06 · 🟡 契约存在但未钉测试，后续切片顺路补）
+- bash 成功时 stderr 被静默丢弃（SPEC「模型要看 stderr」只覆盖了失败路径）
+- read_file 与 cat -n 边缘差异：空文件/无结尾换行/splitlines 的 Unicode 分隔符
+- read_file 「其余异常外抛」只钉了 FileNotFoundError（目录/无权限未钉）
+- AnthropicLLM 的 block 映射（text/tool_use 之外静默丢弃）是纯函数可离线测而未测
+- fixture「相对仓库根」约束无护栏（靠 pytest 从仓库根跑保证）
 
 ## Blockers
 - （无）
@@ -19,6 +26,7 @@
 
 ## Session Log（倒序）
 ### 2026-07-06
+- （中午）**S1 收口 → tag sfs-s1**：① notes/02 拆解笔记（含终止条件状态图 + 2 道拓展练习）② scripts/e2e_s1.py 真跑通过（ClaudeCLILLM 走 claude -p，bash→read_file→结论，turn_count=2，PRD 验收 4）③ 对抗审查（fresh 子 agent）：3 红全修——BashTool description 不再谎称仓库根 / C1 落成 pytest 机器闸门 tests/test_constraints.py / features.json F02+F05 清除 LangChain 残留词 ToolMessage；🟡 补钉 max_turns 默认 40 + write_file 覆盖语义，其余记「对抗审查遗留」节 ④ 全量 19 passed 无 key 同绿。
 - （上午）**F02_real_tools 完成 → passing**：C5 顺序——fixture 复用（research_task.json + workspace/data.md，无需新造）→ test_s1_tools.py 先红（ModuleNotFoundError）→ src/tools.py 实现（72 行）→ 9 passed；全量 16 passed，无 API key 复跑同绿。无新 Deviations。S1 代码侧完成。
 - （上午）**开源落地**：`git init` + 首 commit（26 文件/1795 行）→ `gh repo create` 私有建仓推送 → 用户下令转 **public** → 补 MIT LICENSE + 双语 README（含架构图/五切片导读/deer-flow 对照表，PRD 验收 5 部分交付；GitHub License API 确认识别 MIT）。`.gitignore` 排除 .venv/缓存/settings.local.json。STATUS.md 建仓待办清账。
 - （上午）S1 学习手册 artifact 发布（按 SPEC v1 模版重建——原 f01 页面文件随 tmp 清理丢失，token 取自 Auto Memory）：https://claude.ai/code/artifact/14533136-5bf1-4224-88eb-d100052bfee9
@@ -39,3 +47,8 @@
 ## 🤖 增量流水（待整理）
 <!-- Stop hook 自动追加区。2026-07-06 已整理 16 条：07-04/07-06 各批次归并进上方 Session Log；skill prompt 片段（进度表指令×2、设计 skill 文本×2、WIF auth 行）判为 hook 误抓噪声丢弃。 -->
 - [2026-07-06 11:01] 先清流水
+- [2026-07-06 11:05] 开工 F02
+- [2026-07-06 11:25] id 请自造且不重复（e1、e2…）。
+- [2026-07-06 11:25] id 请自造且不重复（e1、e2…）。
+- [2026-07-06 11:25] id 请自造且不重复（e1、e2…）。
+- [2026-07-06 11:26] 继续

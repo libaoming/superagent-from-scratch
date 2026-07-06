@@ -115,6 +115,14 @@ def test_parallel_tool_results_in_single_user_message():
 # ---------- 终止条件 2：turn 熔断 ----------
 
 
+def test_max_turns_default_is_40():
+    import inspect
+
+    from src.loop import run as run_fn
+
+    assert inspect.signature(run_fn).parameters["max_turns"].default == 40  # SPEC #loop 明文契约
+
+
 def test_max_turns_fuse():
     state = run(
         make_state(),

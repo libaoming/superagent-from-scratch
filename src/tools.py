@@ -13,7 +13,8 @@ from pathlib import Path
 
 class BashTool:
     name = "bash"
-    description = "在仓库根目录执行 shell 命令。查看目录、搜索文件、运行脚本时用。"
+    # description 是给模型看的契约：不承诺执行目录（实际 = 进程 cwd；测试与 E2E 均从仓库根启动）
+    description = "执行 shell 命令。查看目录、搜索文件、运行脚本时用；相对路径基于当前工作目录。"
     input_schema = {
         "type": "object",
         "properties": {"command": {"type": "string", "description": "要执行的 shell 命令"}},

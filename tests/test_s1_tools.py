@@ -91,6 +91,14 @@ def test_write_file_writes_and_confirms(tmp_path):
     assert str(target) in result  # 确认文本含路径，模型可引用
 
 
+def test_write_file_overwrites_existing(tmp_path):
+    """SPEC #tools「整文件覆盖」语义：已有内容被完整替换，不是追加。"""
+    target = tmp_path / "out.md"
+    target.write_text("旧内容\n")
+    WriteFileTool().run(path=str(target), content="新内容\n")
+    assert target.read_text() == "新内容\n"
+
+
 # ---------- 集成：FakeLLM × 真工具跑通 S1 canonical 研究任务 ----------
 
 
