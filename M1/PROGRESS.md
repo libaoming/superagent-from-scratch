@@ -2,16 +2,17 @@
 
 | 字段 | 值 |
 |---|---|
-| active_feature | S2 收口中（F04 已 passing） |
-| slice | S2 |
-| 更新 | 2026-07-08 |
+| active_feature | S3 收口中（F05 已 passing） |
+| slice | S3 |
+| 更新 | 2026-07-09 |
 
 ## Next Candidates
-- S2 收口序列：notes/03 回填（三件实战 + fixture 坑）→ 对抗审查（子 agent）→ 第 3 课（teach 实战课）→ 收口面试模拟（考点清单五条，规矩 6）→ `git tag sfs-s2`
+- S3 收口序列：notes/04 拆解笔记（subagent 委派 + 上下文隔离）→ 对抗审查（子 agent）→ 收口面试模拟（S3 考点清单五条 + 三样现成，规矩 6）→ `git tag sfs-s3`
 - 顺路可清「对抗审查遗留」便宜几条
 
-## S5 备忘（S2 审查 2026-07-08 顺手发现，非本切片账）
-- Interrupt.question 目前被 loop 丢弃（loop.py 只 return state，question 无返回通道）——S5 的 ask_clarification 需靠 middleware 自持状态取回（可行、不破 C4），落地时别忘
+## S5 备忘（后续切片落地时必查）
+- Interrupt.question 目前被 loop 丢弃（loop.py 只 return state，question 无返回通道）——S5 的 ask_clarification 需靠 middleware 自持状态取回（可行、不破 C4），落地时别忘（S2 审查 2026-07-08 发现）
+- **run_with_goal() 复用 TaskTool 须每 run 重建或复位 `_delegated`**——否则 per-instance 配额跨续跑累计泄漏（全局第 4 次委派起被误拒）。D5 的已知代价，S3 审查 2026-07-09 点名
 
 ## 对抗审查遗留（S1 审查 2026-07-06 · 🟡 契约存在但未钉测试，后续切片顺路补）
 - bash 成功时 stderr 被静默丢弃（SPEC「模型要看 stderr」只覆盖了失败路径）
@@ -27,9 +28,15 @@
 - ~~**D1（F01）**~~ ✅ 2026-07-06 随 F03 清账：`run()` 已以关键字参数补入 `middlewares`，S1 测试零改动同绿。
 - **D2（F01）**：State 只含 `messages` + `turn_count`，SPEC 数据模型里标注 "S5:" 的 `todos`/`goal` 字段推迟到 S5 落地（字段纪律：必须被切片测试断言用到）。
 - **D3（F01）**：AnthropicLLM 默认 `model="claude-opus-4-8"`、`max_tokens=16000`、不传 thinking/采样参数（claude-api skill 当前指引；SPEC 未规定默认值）。
+- ~~**D5（F05）**~~ ✅ 2026-07-09 用户确认接受，对抗审查据实校正：`max_concurrent` 实为 **per-instance 生命周期配额**（`_delegated` 只增不减，无 run 边界复位）——单次 run 内等价 per-run，跨 run 复用会累计泄漏。原文案误写「per-run」，审查黄1 戳破后据实改 docstring/notes + 钉 test_delegation_quota_is_per_instance_lifetime。为何不修成真 per-run：loop C4 冻结无处复位，保冻结优先。教学点（配额+超限错误分流+防委派炸弹）不变。
 - ~~**D4（教学环流程）**~~ ✅ 2026-07-07 已确认：落地「切片教学环」时两处按 Claude 推荐拍板——①面试问题环节与规矩 6 收口 quiz **合并升级**（不并存两个 quiz）②过关标准从「满分」改「**面试官 rubric**（命中要点即过）」。用户批准含此两点的 plan + 补充指示「用一场面试准备的思路来讲解和检查」，视为确认。
 
 ## Session Log（倒序）
+### 2026-07-09
+- **S3 收口推进（notes/04 + 对抗审查 0 红 5 黄全清）**：① notes/04 拆解笔记（deer-flow 533 行对照→60 行简化→决策 why→隔离测试手法→可迁移 6 条→拓展练习 2→收口结论；行数经 wc 校正）② 对抗审查（fresh 子 agent）报 **0 红 5 黄**——黄1（真问题）：max_concurrent 文案「per-run」与实现「per-instance 生命周期」（_delegated 只增不减）不符，S5 run_with_goal 复用会泄漏 → 据实改 docstring/notes/D5 + 钉 test_delegation_quota_is_per_instance_lifetime + S5 备忘；黄2 熔断边界测试（_final_text 回退占位）；黄3 防递归 name 约定注释；黄4 隔离正向弹尽确认；黄5 归 D5。③ 全量 **44 passed**，src 402 行。剩：收口面试 → tag sfs-s3。
+- **F05_task_subagent 完成 → passing**：C5 顺序——fixture 先造（subagent_flow + subagent_concurrency，均带「录制=全局调用序」注释）→ test_s3_subagent.py 先红（ModuleNotFoundError）→ src/subagent.py 实现（TaskTool 缝③工具 + 递归调 run + 单层委派滤 task + _final_text 只回结论）→ 4 passed；全量 42 passed（存量 38 零改动同绿 = C4 再实证）。产生 Deviation D5 待核对。**S3 代码侧完成**。
+- **S3 教学环第 1-2 步完成**：考点清单提炼（reference/s3-exam-points.html 五条 + 交叉复习三旧考点）→ 0003 课发布并吸收合格（learning-records/0006，三题脱稿全过）。核心洞察 subagent=递归+隔离在 07-07 晚用户已自行摸到，本课收敛成型。
+- **S2 收口完成 → tag sfs-s2**：收口面试第二次通过（learning-records/0005，追问 A/B/C 全满分 + 压力测试顶住）→ commit 9e7a17a（F04 三件 + 对抗审查全清）+ tag sfs-s2。teach/ 判个人学习记录不入公开仓库 → 加进 .gitignore（check-ignore 确认）。S2 收口面试第一次未通过（0004，标签级答案+疲劳）是闸门首次真拦截。
 ### 2026-07-08
 - **S2 收口推进（notes 回填 + 对抗审查全清）**：① notes/03 回填完成（新四节「内置三件实战」+ fixture 坑实录 + 八节收口结论，行数经 wc 实测校正）② 对抗审查（fresh 子 agent）报 **1 红 4 黄**——红：Summarization 按条数切可断 tool_use/tool_result 配对（API 硬约束，「简单策略」不豁免非法序列）→ 当场修复（切点对配对让位 + keep_last<max_messages 构造断言）+ 钉配对测试；黄全清：近 K 条方向断言、预算边界测试、C7 补齐 LLMClient/Tool/run 签名闸门（test_constraints.py，S1 遗留的 C7 账一并结清）③ 全量 **38 passed**，src 337 行。S5 备忘一条（Interrupt.question 返回通道）记入上方。剩：收口面试模拟 → tag sfs-s2。
 - **F04_core_middlewares 完成 → passing**：C5 顺序——fixture 先造（oversize_tool_output.json + summarize_history.json，后者是「录制=全局调用序」教学样本；错误场景复用 echo_roundtrip、未超阈值场景用 natural_close 单条录制反向证明压缩未偷跑）→ test_s2_core_mw.py 先红（ModuleNotFoundError）→ src/middlewares/ 三件实现（budget 截断标注 / error 异常转 [tool error] 文本 / summarization 保近 K 条 + llm 构造注入压缩，Q1=A）→ 6 passed；全量 32 passed（26 条存量零改动同绿 = C4 再实证），src 320 行。无新 Deviations。**S2 代码侧完成**。
@@ -76,3 +83,16 @@
 - [2026-07-08 16:52]       对象，让三个出口在 run() 里排队站好。
 - [2026-07-08 16:55]       "system", "max_turns"]；连同三条缝的协议签名（LLMClient.complete、Tool 四件套）一并冻结。谁想改引擎签名（删参、改名、调序），这条断言先红，变更
 - [2026-07-08 17:00] 保证 保留区 不存在 tools_result 孤儿
+- [2026-07-08 17:04] 确定 是工具调用后的Harness tooloutputbudget
+- [2026-07-08 17:05] teach/ 加进 .gitignore
+- [2026-07-08 17:07] 提炼 S3 考点
+- [2026-07-08 17:29] ARGUMENTS: S3
+- [2026-07-08 17:47] 上完了
+- [2026-07-08 17:51] 3. 递归调用物理摘掉 task 工具
+- [2026-07-08 18:04] 开工 F05
+- [2026-07-08 19:15] 接受这个简化
+- [2026-07-08 19:21] **总评**：主线正确、隔离与配额截断在当前调用路径下行为无误；唯一需在 S5 前必须处置的是 `_delegated` 跨 run 不复位这一潜伏副作用（per-instance 实现 vs per
+- [2026-07-08 19:22] 考我 S3
+- [2026-07-08 19:38] 5. 机制 vs 纪律是两侧，PM 要同时管; context 治理是产品成本项，该进 PRD。委派清单= 能力编排面
+- [2026-07-08 19:43] 1. 复用 run(sub_state,subt_tools,middlewares)
+- [2026-07-08 19:45]       这就是可迁移清单里那条判断:任何有自我调用/放大风险的强能力(递归、fork、批量触发),用「能力物理缺席」兜底,而不是「运行时检查」——验收信号是「删掉运行时检查,危险行为依然无法发生」

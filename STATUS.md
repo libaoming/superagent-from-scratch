@@ -3,14 +3,14 @@
 > 每次 session 第一个读的文件。收尾必更新本文件。
 
 ## 一句话状态
-2026-07-08 **S2 只差面试收口（4/8 passing）**：F04 三件完成 + notes/03 回填闭合 + 对抗审查 1 红 4 黄全清（红=Summarization 切点破坏工具配对，已修复钉测试；C7 三协议签名闸门补齐），全量 **38 passed**、src 337 行。教学环 1-2 步完成（0002 课 + 考点清单五条）。仓库公开：https://github.com/libaoming/superagent-from-scratch（S1 已 tag sfs-s1）。
+2026-07-09 **F05 passing + 对抗审查全清（5/8，S3 只差面试收口）**：src/subagent.py（TaskTool 缝③工具 + 递归调 run + 单层委派 + 只回结论）；对抗审查 0 红 5 黄全清（黄1=max_concurrent 据实校正为 per-instance 生命周期配额 + 钉跨 run 泄漏测试；边界/防递归补齐）；notes/04 回填闭合。verify 6 passed、全量 **44 passed**（存量零改动同绿 = C4 再实证），src 402 行。S2 已 tag sfs-s2。S3 教学环 1-2 步完成。仓库公开：https://github.com/libaoming/superagent-from-scratch（tag: sfs-s1, sfs-s2）。
 
 ## 下次入口
 1. 读本文件 → 读 `M1/PROGRESS.md`（含「对抗审查遗留」🟡 清单）
 2. 跑 `bash M1/init.sh` 确认环境
-3. 当前应做：**S2 收口面试重考**（第一次 2026-07-08 晚未通过——标签级答案 + 追问空答 + 新实错「Budget 挂 after_model」，见 teach/learning-records/0004；重考固定五考题在该记录第二节；用户说「考我 S2」触发，全过才打 tag）→ `git tag sfs-s2` + README 切片表更新 + 提交本批改动
-4. 第 3 课（teach 实战课，选做，素材=notes/03 第四节 + 审查红修复过程）
-5. S3 起教学环为标准流程：开工前先提炼考点 + `/teach` 理论课
+3. 当前应做：**S3 收口面试模拟**（规矩 6：用户说「考我 S3」触发；S3 考点清单五条 + 三样现成 + 交叉复习三旧考点，全过才打 tag）→ `git tag sfs-s3` + 提交 S3 全批改动（含 teach/ 已 gitignore）
+4. 收口后 S4：F06_skills 开教学环（提炼考点 → /teach S4 → 开工）
+5. 未 push：本地 commit/tag 都在，远程未动——用户要 push 再 `git push && git push --tags`
 
 ## 关键技术事实
 - 技术栈：Python 3.12 + uv + pytest；**零框架依赖**（不用 LangChain/LangGraph，loop 自己写，直接调 LLM API）

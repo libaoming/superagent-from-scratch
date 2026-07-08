@@ -1,0 +1,12 @@
+{
+  "description": "F05 subagent 主线：主 agent 派 task → subagent 在独立 State 里跑一步工具再给结论 → 结论作 tool_result 回主对话 → 主 agent 收口。「录制=全局调用序」：responses[1..2] 归 subagent 内部循环消耗，主对话只见 responses[0] 与 [3]。",
+  "responses": [
+    {"content": [
+      {"type": "text", "text": "这是个吃上下文的脏活，派个 subagent 去。"},
+      {"type": "tool_use", "id": "d1", "name": "task", "input": {"description": "统计 workspace 文件", "prompt": "fixtures/workspace 目录里有几个文件？只回数量和文件名。"}}
+    ]},
+    {"content": [{"type": "tool_use", "id": "s1", "name": "bash", "input": {"command": "ls fixtures/workspace"}}]},
+    {"content": [{"type": "text", "text": "workspace 下有 1 个文件：data.md。"}]},
+    {"content": [{"type": "text", "text": "子任务已完成：workspace 下有 1 个文件 data.md。"}]}
+  ]
+}

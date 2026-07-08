@@ -13,4 +13,8 @@ verify 引用的 fixture 都在此。**fixture 先于代码**：feature 的 veri
 | `fake_llm/research_task.json` | ✅ | F02 集成 + S1 收口 E2E 对照（bash→read_file→结论） |
 | `fake_llm/oversize_tool_output.json` | ✅ | F04：ToolOutputBudget 截断场景（超长输出的 spew 工具由测试注入） |
 | `fake_llm/summarize_history.json` | ✅ | F04：Summarization 压缩场景，「录制=全局调用序」教学样本（responses[0] 归压缩调用消耗） |
+| `fake_llm/subagent_flow.json` | ✅ | F05：主→task→subagent 跑 bash→结论回填→主收口（responses[1..2] 归 subagent 内部循环） |
+| `fake_llm/subagent_concurrency.json` | ✅ | F05：4 个 task 撞 max_concurrent=3，第 4 个回错误文本 |
+| `fake_llm/subagent_quota_across_runs.json` | ✅ | F05 审查黄1：同实例跨两次 run，配额泄漏（per-instance 生命周期语义） |
+| `fake_llm/subagent_halt.json` | ✅ | F05 审查黄2：subagent max_turns 熔断，_final_text 回退占位 |
 | `workspace/data.md` | ✅ | F02：read_file/bash 真实执行语料 |

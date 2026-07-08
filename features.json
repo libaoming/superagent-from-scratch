@@ -66,9 +66,9 @@
     {
       "id": "F05_task_subagent",
       "slice": "S3",
-      "status": "pending",
+      "status": "passing",
       "verify": {"type": "command", "run": "uv run pytest tests/test_s3_subagent.py -q", "fixture": "fixtures/fake_llm/subagent_flow.json"},
-      "verify_notes": "",
+      "verify_notes": "2026-07-09 verify 真跑 6 passed；全量 44 passed（存量 38 零改动同绿=C4 再实证）。src/subagent.py：TaskTool（缝③工具，构造注入 llm/tools/middlewares）→ run() 开全新 State 递归调同一 loop → _final_text 只回末条文本结论。单层委派=构造期滤掉 name=='task'。fixture：subagent_flow（主→task→subagent 跑 bash→结论回填→主收口，「录制=全局调用序」responses[1..2] 归 subagent）+ subagent_concurrency（4 task 撞 max_concurrent=3，第 4 回错误文本）+ subagent_quota_across_runs + subagent_halt。测试钉住：只回结论/上下文隔离(正反向双证)/tool_result user 角色/子工具集无 task/配额截断/跨 run 泄漏/熔断边界。对抗审查 0 红 5 黄全清：黄1 max_concurrent 据实校正为 per-instance 生命周期配额（非 per-run，_delegated 只增不减，S5 run_with_goal 复用须每 run 重建）+ 钉 test_delegation_quota_is_per_instance_lifetime；黄2 熔断边界测试；黄3 防递归 name 约定加注释；黄4 正向弹尽确认。D5 用户已接受。",
       "related": {"specs": ["SPEC.md#subagent"], "code": ["src/subagent.py", "src/tools.py"], "docs": []},
       "affected": "task 工具：新开独立 messages 的 subagent 跑完子任务，只把最终结论作为 tool_result（user 角色）回主对话；max_concurrent 截断",
       "out_of_scope": "不做后台线程池/SSE 事件流；同步执行即可；不做 subagent 类型注册表（只有 general-purpose）",

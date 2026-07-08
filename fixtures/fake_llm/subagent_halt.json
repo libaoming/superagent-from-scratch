@@ -1,0 +1,8 @@
+{
+  "description": "F05 审查黄2：subagent 因 max_turns 熔断收口，末条是 tool_result（user 角色，无 text）。_final_text 应回退到「无文本结论」而非把 tool_result 当结论。responses[1] 归 subagent 的唯一一拍（bash），熔断后主 agent 收口 [2]。",
+  "responses": [
+    {"content": [{"type": "tool_use", "id": "h1", "name": "task", "input": {"description": "会熔断的子任务", "prompt": "列目录"}}]},
+    {"content": [{"type": "tool_use", "id": "hb", "name": "bash", "input": {"command": "ls fixtures/workspace"}}]},
+    {"content": [{"type": "text", "text": "子 agent 无结论返回，据此继续。"}]}
+  ]
+}

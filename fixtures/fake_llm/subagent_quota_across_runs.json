@@ -1,0 +1,10 @@
+{
+  "description": "F05 审查黄1：同一 TaskTool 实例跨两次顶层 run 复用，配额跨 run 泄漏（per-instance 生命周期语义）。max_concurrent=1：run1 用掉配额，run2 的 task 被拒。responses[0..2] 归 run1，[3..4] 归 run2。",
+  "responses": [
+    {"content": [{"type": "tool_use", "id": "q1", "name": "task", "input": {"description": "第一次委派", "prompt": "回一句：子任务完成"}}]},
+    {"content": [{"type": "text", "text": "子任务完成"}]},
+    {"content": [{"type": "text", "text": "run1 收口。"}]},
+    {"content": [{"type": "tool_use", "id": "q2", "name": "task", "input": {"description": "第二次委派", "prompt": "回一句：子任务完成"}}]},
+    {"content": [{"type": "text", "text": "run2 收口：委派被配额拦下。"}]}
+  ]
+}
