@@ -11,4 +11,6 @@ verify 引用的 fixture 都在此。**fixture 先于代码**：feature 的 veri
 | `fake_llm/parallel_tools.json` | ✅ | F01：同响应多 tool_use → 结果并入同一条 user 消息（API 硬约束） |
 | `fake_llm/endless_tool_calls.json` | ✅ | F01：max_turns 熔断（终止条件 2） |
 | `fake_llm/research_task.json` | ✅ | F02 集成 + S1 收口 E2E 对照（bash→read_file→结论） |
+| `fake_llm/oversize_tool_output.json` | ✅ | F04：ToolOutputBudget 截断场景（超长输出的 spew 工具由测试注入） |
+| `fake_llm/summarize_history.json` | ✅ | F04：Summarization 压缩场景，「录制=全局调用序」教学样本（responses[0] 归压缩调用消耗） |
 | `workspace/data.md` | ✅ | F02：read_file/bash 真实执行语料 |

@@ -1,0 +1,7 @@
+{
+  "description": "F04 Summarization 场景（「录制=全局调用序」教学 fixture）：responses[0] 被 before_model 的压缩调用消耗，responses[1] 才是主循环的收口响应——两者顺序对调测试必红",
+  "responses": [
+    {"content": [{"type": "text", "text": "早前对话摘要：用户与助手完成多轮准备，关键结论 X 已确认。"}]},
+    {"content": [{"type": "text", "text": "基于摘要继续：任务完成。"}]}
+  ]
+}

@@ -55,9 +55,9 @@
     {
       "id": "F04_core_middlewares",
       "slice": "S2",
-      "status": "pending",
+      "status": "passing",
       "verify": {"type": "command", "run": "uv run pytest tests/test_s2_core_mw.py -q", "fixture": "fixtures/fake_llm/oversize_tool_output.json"},
-      "verify_notes": "",
+      "verify_notes": "2026-07-08 verify 真跑 9 passed；全量 38 passed（存量零改动同绿=C4 实证）。src/middlewares/ 三件各一文件（budget=wrap 截断标注 / error=wrap 异常转 [tool error] 文本 / summarization=before 保近 K 条+llm 压缩，Q1=A 构造注入）。新 fixture：oversize_tool_output.json + summarize_history.json（「录制=全局调用序」教学样本）；错误场景复用 echo_roundtrip，「未超阈值不压缩」用 natural_close 单条录制反向证明。对抗审查 1 红 4 黄全清：红=切点破坏 tool_use/tool_result 配对→修复（recent 以 tool_result 开头时把配对 assistant 挪回）+ 钉 test_summarization_never_splits_tool_pairing；黄=近 K 条方向断言/keep_last<max_messages 守护/预算边界/C7 补 LLMClient+Tool+run 签名闸门（test_constraints.py）。",
       "related": {"specs": ["SPEC.md#middleware"], "code": ["src/middlewares/"], "docs": []},
       "affected": "三个内置 middleware：ToolOutputBudget（截断超额输出）/ ToolErrorHandling（异常→错误 ToolMessage 不中断 run）/ Summarization（超阈值压缩旧消息）",
       "out_of_scope": "摘要用简单策略（保留近 N 条+LLM 压缩其余），不做 deer-flow 的 durable context 通道",

@@ -1,0 +1,7 @@
+{
+  "description": "F04 ToolOutputBudget 场景：模型调一次 spew 工具（测试侧产出超长文本）→ 收口。截断是 middleware 的事，录制只管模型侧行为",
+  "responses": [
+    {"content": [{"type": "tool_use", "id": "o1", "name": "spew", "input": {}}]},
+    {"content": [{"type": "text", "text": "输出很长，预算内的部分已经够用，结束。"}]}
+  ]
+}
