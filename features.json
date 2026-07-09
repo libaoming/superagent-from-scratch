@@ -77,9 +77,9 @@
     {
       "id": "F06_skills",
       "slice": "S4",
-      "status": "pending",
+      "status": "passing",
       "verify": {"type": "command", "run": "uv run pytest tests/test_s4_skills.py -q", "fixture": "fixtures/skills/demo-skill/SKILL.md"},
-      "verify_notes": "",
+      "verify_notes": "2026-07-09 verify 真跑 6 passed；全量 50 passed（存量 44 零改动同绿=C4 第四次实证）。src/skills.py 两函数：discover_skills（rglob SKILL.md → yaml frontmatter → registry{name:{description,path}} + system_block 只含 name+description）+ activate（/名字 前缀且已注册→读全文作 user 前缀块注入，否则原样放行）。skills 不占缝、全在 loop 外，run 零改动。fixture：demo-skill + note-taker（验证多技能递归发现）。测试钉住 token 经济学：description 进 system（DESC_MARK 在 system_block）+ 正文不进 system（BODY_MARK 不在）+ 斜杠激活正文进 user messages（Q3=A）+ 无斜杠/未注册原样放行。pyyaml 已在 pyproject（C2 预留）。对抗审查 0 红 5 黄全清（2026-07-09 fresh 子 agent）：Y2 补断言 DESC_MARK in injected 焊死注入边界=含 frontmatter 全文（description 双通道注入=有意为之，Y1 注释坦白）；Y3 注释坦白教学版不设防畸形 frontmatter（未闭合---/YAML 错会中止发现，生产版需 try/except）；Y4 SPEC skills/*/→skills/**/消歧对齐 rglob；Y5 注释重名后者胜。收口面试通过（5 考点，4 题源码级）。",
       "related": {"specs": ["SPEC.md#skills"], "code": ["src/skills.py"], "docs": []},
       "affected": "skills/ 递归发现 SKILL.md → frontmatter 解析 → 系统提示注入 name+description → '/name task' 斜杠激活注入全文",
       "out_of_scope": "不做 allowed-tools 工具白名单过滤；不做 .skill 压缩包安装；不做 required-secrets",

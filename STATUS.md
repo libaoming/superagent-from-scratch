@@ -3,14 +3,13 @@
 > 每次 session 第一个读的文件。收尾必更新本文件。
 
 ## 一句话状态
-2026-07-09 **F05 passing + 对抗审查全清（5/8，S3 只差面试收口）**：src/subagent.py（TaskTool 缝③工具 + 递归调 run + 单层委派 + 只回结论）；对抗审查 0 红 5 黄全清（黄1=max_concurrent 据实校正为 per-instance 生命周期配额 + 钉跨 run 泄漏测试；边界/防递归补齐）；notes/04 回填闭合。verify 6 passed、全量 **44 passed**（存量零改动同绿 = C4 再实证），src 402 行。S2 已 tag sfs-s2。S3 教学环 1-2 步完成。仓库公开：https://github.com/libaoming/superagent-from-scratch（tag: sfs-s1, sfs-s2）。
+2026-07-09 **S4 收口完成（6/8 passing）**：F06_skills 全绿——src/skills.py（发现 discover_skills + 激活 activate 两纯函数，skills 不占缝、全在 loop 外，run 零改动），verify 6 passed、全量 **50 passed**（存量 44 零改动同绿 = C4 第四次实证），src 454 行。**对抗审查 0 红 5 黄全清**（Y1/Y3/Y5 注释、Y2 补断言焊死注入边界、Y4 SPEC skills/**/消歧）+ **收口面试通过**（5 考点，4 题源码级）+ notes/05 拆解笔记落盘 + Artifact 留档。tag `sfs-s4` 待提交。S1-S3 已收口打 tag（sfs-s1/s2/s3，已 push）。仓库公开：https://github.com/libaoming/superagent-from-scratch。
 
 ## 下次入口
-1. 读本文件 → 读 `M1/PROGRESS.md`（含「对抗审查遗留」🟡 清单）
+1. 读本文件 → 读 `M1/PROGRESS.md`
 2. 跑 `bash M1/init.sh` 确认环境
-3. 当前应做：**S3 收口面试模拟**（规矩 6：用户说「考我 S3」触发；S3 考点清单五条 + 三样现成 + 交叉复习三旧考点，全过才打 tag）→ `git tag sfs-s3` + 提交 S3 全批改动（含 teach/ 已 gitignore）
-4. 收口后 S4：F06_skills 开教学环（提炼考点 → /teach S4 → 开工）
-5. 未 push：本地 commit/tag 都在，远程未动——用户要 push 再 `git push && git push --tags`
+3. 当前应做：**S5（最后一个切片，两 feature）**——F07_todo_goal + F08_clarification_hitl。两条 S5 备忘务必记：① Interrupt.question 返回通道；② run_with_goal 复用 TaskTool 须每 run 重建/复位 `_delegated`（S3 D5 已埋雷：`_delegated` per-instance 累计，跨 run 会误拒委派）。先补 CONTEXT.md？（S5 涉 goal 续跑的上下文拼装，改前先读）
+4. push 时机：S4 已 commit+tag（若尚未 push，`git push && git push --tags`）；S5 收口同法
 
 ## 关键技术事实
 - 技术栈：Python 3.12 + uv + pytest；**零框架依赖**（不用 LangChain/LangGraph，loop 自己写，直接调 LLM API）

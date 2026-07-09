@@ -125,7 +125,7 @@ task(description: str, prompt: str) -> str   # 返回 = subagent 最终文本，
 
 ### skills {#skills}
 
-发现：启动时递归扫 `skills/*/SKILL.md`，解析 frontmatter；**description 常驻 system prompt，正文一个字不进**。
+发现：启动时递归扫 `skills/**/SKILL.md`（rglob 任意深度），解析 frontmatter；**description 常驻 system prompt，正文一个字不进**。
 激活：用户消息以 `/名字 ` 开头 → 该 SKILL.md 全文作为当轮附加上下文注入。
 **注入点（2026-07-04 拍板 · Q3=A）**：全文拼为当轮 user 消息的**前缀块**（进 history、可被 Summarization 正常压缩、测试断言直接查 messages）；不动 system。
 教学要点（token 经济学）：元数据便宜（常驻）、正文贵（按需）——这就是 Claude Code skills 与 deer-flow SkillActivationMiddleware 的共同设计内核。

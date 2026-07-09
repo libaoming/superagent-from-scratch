@@ -2,12 +2,12 @@
 
 | 字段 | 值 |
 |---|---|
-| active_feature | S3 收口中（F05 已 passing） |
-| slice | S3 |
+| active_feature | S4 收口中（F06 已 passing） |
+| slice | S4 |
 | 更新 | 2026-07-09 |
 
 ## Next Candidates
-- S3 收口序列：notes/04 拆解笔记（subagent 委派 + 上下文隔离）→ 对抗审查（子 agent）→ 收口面试模拟（S3 考点清单五条 + 三样现成，规矩 6）→ `git tag sfs-s3`
+- S4 收口序列：notes/05 拆解笔记（skills 技能系统 + token 经济学）→ 对抗审查（子 agent）→ 收口面试模拟（S4 考点清单五条，规矩 6）→ `git tag sfs-s4`
 - 顺路可清「对抗审查遗留」便宜几条
 
 ## S5 备忘（后续切片落地时必查）
@@ -33,6 +33,8 @@
 
 ## Session Log（倒序）
 ### 2026-07-09
+- **F06_skills 完成 → passing**：C5 顺序——fixture 先造（skills/demo-skill + note-taker，两 SKILL.md 验证多技能递归发现）→ test_s4_skills.py 先红（ModuleNotFoundError）→ src/skills.py 实现（discover_skills：rglob+yaml frontmatter→registry+system_block 只含元数据 / activate：斜杠+已注册→全文作 user 前缀块，否则原样）→ 6 passed；全量 50 passed（存量 44 零改动同绿 = C4 第四次实证），src 454 行。skills 不占缝、全在 loop 外。pyyaml C2 早预留。无新 Deviations。**S4 代码侧完成**。
+- **S4 教学环第 1-2 步完成**：考点清单提炼（reference/s4-exam-points.html 五条 + 交叉复习四旧考点）→ 0004 课发布并吸收合格（learning-records/0008，三题过；注入点「压缩」理由一度说反已当场纠——skill 正文放「压得掉的地方」user history，system 压不掉）。核心洞察：skills 注入知识不是能力、token 经济学元数据常驻正文按需。
 - **S3 收口推进（notes/04 + 对抗审查 0 红 5 黄全清）**：① notes/04 拆解笔记（deer-flow 533 行对照→60 行简化→决策 why→隔离测试手法→可迁移 6 条→拓展练习 2→收口结论；行数经 wc 校正）② 对抗审查（fresh 子 agent）报 **0 红 5 黄**——黄1（真问题）：max_concurrent 文案「per-run」与实现「per-instance 生命周期」（_delegated 只增不减）不符，S5 run_with_goal 复用会泄漏 → 据实改 docstring/notes/D5 + 钉 test_delegation_quota_is_per_instance_lifetime + S5 备忘；黄2 熔断边界测试（_final_text 回退占位）；黄3 防递归 name 约定注释；黄4 隔离正向弹尽确认；黄5 归 D5。③ 全量 **44 passed**，src 402 行。剩：收口面试 → tag sfs-s3。
 - **F05_task_subagent 完成 → passing**：C5 顺序——fixture 先造（subagent_flow + subagent_concurrency，均带「录制=全局调用序」注释）→ test_s3_subagent.py 先红（ModuleNotFoundError）→ src/subagent.py 实现（TaskTool 缝③工具 + 递归调 run + 单层委派滤 task + _final_text 只回结论）→ 4 passed；全量 42 passed（存量 38 零改动同绿 = C4 再实证）。产生 Deviation D5 待核对。**S3 代码侧完成**。
 - **S3 教学环第 1-2 步完成**：考点清单提炼（reference/s3-exam-points.html 五条 + 交叉复习三旧考点）→ 0003 课发布并吸收合格（learning-records/0006，三题脱稿全过）。核心洞察 subagent=递归+隔离在 07-07 晚用户已自行摸到，本课收敛成型。
@@ -96,3 +98,20 @@
 - [2026-07-08 19:38] 5. 机制 vs 纪律是两侧，PM 要同时管; context 治理是产品成本项，该进 PRD。委派清单= 能力编排面
 - [2026-07-08 19:43] 1. 复用 run(sub_state,subt_tools,middlewares)
 - [2026-07-08 19:45]       这就是可迁移清单里那条判断:任何有自我调用/放大风险的强能力(递归、fork、批量触发),用「能力物理缺席」兜底,而不是「运行时检查」——验收信号是「删掉运行时检查,危险行为依然无法发生」
+- [2026-07-08 19:48]       per-instance"的真相。对抗审查两次都是抓这类「说的和做的不一样」。
+- [2026-07-08 19:49] push
+- [2026-07-08 19:55] 提炼 S4 考点
+- [2026-07-08 20:23] ARGUMENTS: S4
+- [2026-07-08 20:50] 上完了
+- [2026-07-08 20:59] 3. 注入到user 角色的 上下文. skill正文是当前规则 不是永久规则，进入system 永久生效 不会被压缩
+- [2026-07-08 21:05] 开工 F06
+- [2026-07-08 21:06] 总结 准备下班
+- [2026-07-09 09:54] [Your previous response had no visible output. Please continue and produce a user-visible response.]
+- [2026-07-09 09:56] 读 status 汇报当前进展
+- [2026-07-09 10:02] 做 1和 2
+- [2026-07-09 10:07] notes/05-s4-skills.md  用 artifact 打开
+- [2026-07-09 10:11] 按这个方案清黄，Y3 记录级即可
+- [2026-07-09 10:13] 开始面试
+- [2026-07-09 10:23]      fm = parse_frontmatter(skill_md)
+- [2026-07-09 10:41]      system_prompt += 渲染(registry)
+- [2026-07-09 10:45]     两个边界走的是同一条分支（未注册 → 原样放行）。设计上「误伤保护」和「未注册容错」是同一个 if skill is None: return user_text 兜的——只要斜杠后的名字不在

@@ -17,4 +17,6 @@ verify 引用的 fixture 都在此。**fixture 先于代码**：feature 的 veri
 | `fake_llm/subagent_concurrency.json` | ✅ | F05：4 个 task 撞 max_concurrent=3，第 4 个回错误文本 |
 | `fake_llm/subagent_quota_across_runs.json` | ✅ | F05 审查黄1：同实例跨两次 run，配额泄漏（per-instance 生命周期语义） |
 | `fake_llm/subagent_halt.json` | ✅ | F05 审查黄2：subagent max_turns 熔断，_final_text 回退占位 |
+| `skills/demo-skill/SKILL.md` | ✅ | F06：技能发现+斜杠激活主 fixture（frontmatter 两字段 + 正文） |
+| `skills/note-taker/SKILL.md` | ✅ | F06：第二个技能，验证多技能递归发现 |
 | `workspace/data.md` | ✅ | F02：read_file/bash 真实执行语料 |
