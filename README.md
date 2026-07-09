@@ -4,7 +4,7 @@
 
 [中文版 README](README.zh-CN.md) · Teardown notes (Chinese) in [`notes/`](notes/)
 
-> 🚧 **Work in progress** — built in public, slice by slice. S1 is done (tag `sfs-s1`); S2 is next. Each slice ships with passing offline tests and a teardown note.
+> ✅ **All five slices shipped** — built in public, slice by slice (tags `sfs-s1` … `sfs-s5`). 8/8 features passing, **62 offline tests green**, **~666 lines** of `src/`. Every slice ships with passing offline tests and a why-first teardown note.
 
 ## Why this exists
 
@@ -55,10 +55,10 @@ Linear progression — each slice is a self-contained lesson with tests and a no
 | Slice | What you build | What you learn | Status |
 |---|---|---|---|
 | **S1** | The agent loop + LLM seam + 3 real tools | An agent is a while loop. The three (and only three) termination conditions. Why `tool_result` goes back as a `user` message. | ✅ done ([note](notes/02-s1-agent-loop.md), tag `sfs-s1`) |
-| **S2** | Middleware protocol (`before_model` / `after_model` / `wrap_tool_call`) + 3 built-ins | Cross-cutting concerns decoupled from the loop — the real architecture of modern harnesses. Output budgets, error recovery, summarization. | ⬜ |
-| **S3** | `task` tool + subagent delegation | Context isolation is the lifeline of long tasks. A subagent is not a new mechanism — it's the same loop, recursed, with a fresh context that returns only conclusions. | ⬜ |
-| **S4** | Skills system (SKILL.md + slash activation) | The token economics of hot-pluggable capabilities: metadata is cheap (always-on), body is expensive (on-demand). | ⬜ |
-| **S5** | `write_todos` + goal re-run loop + `ask_clarification` HITL | "Long-horizon" is not a longer model — it's a goal loop the harness wraps around the model, with fuses. Interrupt = a normal close that saves state. | ⬜ |
+| **S2** | Middleware protocol (`before_model` / `after_model` / `wrap_tool_call`) + 3 built-ins | Cross-cutting concerns decoupled from the loop — the real architecture of modern harnesses. Output budgets, error recovery, summarization. | ✅ done ([note](notes/03-s2-middleware.md), tag `sfs-s2`) |
+| **S3** | `task` tool + subagent delegation | Context isolation is the lifeline of long tasks. A subagent is not a new mechanism — it's the same loop, recursed, with a fresh context that returns only conclusions. | ✅ done ([note](notes/04-s3-subagent.md), tag `sfs-s3`) |
+| **S4** | Skills system (SKILL.md + slash activation) | The token economics of hot-pluggable capabilities: metadata is cheap (always-on), body is expensive (on-demand). | ✅ done ([note](notes/05-s4-skills.md), tag `sfs-s4`) |
+| **S5** | `write_todos` + goal re-run loop + `ask_clarification` HITL | "Long-horizon" is not a longer model — it's a goal loop the harness wraps around the model, with fuses. Interrupt = a normal close that saves state. | ✅ done ([note](notes/06-s5-long-task.md), tag `sfs-s5`) |
 
 ## deer-flow vs. this repo
 

@@ -4,7 +4,7 @@
 
 [English README](README.md) · 拆解笔记见 [`notes/`](notes/)
 
-> 🚧 **建设中**——逐切片公开构建。S1 已完成（tag `sfs-s1`），下一片 S2。每个切片交付时都带可离线跑的测试 + 一篇拆解笔记。
+> ✅ **五刀全部完工**——逐切片公开构建（tag `sfs-s1` … `sfs-s5`）。8/8 feature passing，**62 条离线测试全绿**，`src/` **约 666 行**。每个切片交付时都带可离线跑的测试 + 一篇 why 先行的拆解笔记。
 
 ## 为什么做这个
 
@@ -54,10 +54,10 @@
 | 切片 | 构建什么 | 学到什么 | 状态 |
 |---|---|---|---|
 | **S1** | agent 循环 + LLM 接缝 + 3 个真实工具 | agent 就是一个 while 循环。终止条件只有三种。为什么 `tool_result` 要以 `user` 角色回填。 | ✅ 完成（[笔记](notes/02-s1-agent-loop.md)，tag `sfs-s1`）|
-| **S2** | middleware 协议（`before_model` / `after_model` / `wrap_tool_call`）+ 3 个内置件 | 横切关注点与循环解耦——现代 harness 的真架构。输出限额、错误恢复、上下文摘要。 | ⬜ |
-| **S3** | `task` 工具 + subagent 委派 | 上下文隔离是长任务的命根。subagent 不是新机制——是同一个循环的递归调用 + 全新上下文，只回结论。 | ⬜ |
-| **S4** | skills 系统（SKILL.md + 斜杠激活） | 能力热插拔的 token 经济学：元数据便宜（常驻）、正文贵（按需）。 | ⬜ |
-| **S5** | `write_todos` + goal 续跑 + `ask_clarification` HITL | 「long-horizon」不是模型变长——是 harness 在模型外面套的目标闭环，带熔断。中断 = 保存现场的正常收口。 | ⬜ |
+| **S2** | middleware 协议（`before_model` / `after_model` / `wrap_tool_call`）+ 3 个内置件 | 横切关注点与循环解耦——现代 harness 的真架构。输出限额、错误恢复、上下文摘要。 | ✅ 完成（[笔记](notes/03-s2-middleware.md)，tag `sfs-s2`）|
+| **S3** | `task` 工具 + subagent 委派 | 上下文隔离是长任务的命根。subagent 不是新机制——是同一个循环的递归调用 + 全新上下文，只回结论。 | ✅ 完成（[笔记](notes/04-s3-subagent.md)，tag `sfs-s3`）|
+| **S4** | skills 系统（SKILL.md + 斜杠激活） | 能力热插拔的 token 经济学：元数据便宜（常驻）、正文贵（按需）。 | ✅ 完成（[笔记](notes/05-s4-skills.md)，tag `sfs-s4`）|
+| **S5** | `write_todos` + goal 续跑 + `ask_clarification` HITL | 「long-horizon」不是模型变长——是 harness 在模型外面套的目标闭环，带熔断。中断 = 保存现场的正常收口。 | ✅ 完成（[笔记](notes/06-s5-long-task.md)，tag `sfs-s5`）|
 
 ## deer-flow 对照
 
