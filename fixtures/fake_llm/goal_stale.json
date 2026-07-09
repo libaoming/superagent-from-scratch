@@ -1,0 +1,11 @@
+{
+  "description": "F07 无进展熔断：连续续跑产出相同 assistant 文本，goal 始终 NO。run1/2/3 文本全等→第 3 轮 stale 累计到 2→停（不再续跑）。共 6 条交错：文本/NO ×3。",
+  "responses": [
+    {"content": [{"type": "text", "text": "我还在处理中。"}]},
+    {"content": [{"type": "text", "text": "NO，尚未达成。"}]},
+    {"content": [{"type": "text", "text": "我还在处理中。"}]},
+    {"content": [{"type": "text", "text": "NO，尚未达成。"}]},
+    {"content": [{"type": "text", "text": "我还在处理中。"}]},
+    {"content": [{"type": "text", "text": "NO，尚未达成。"}]}
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "description": "F07 拆 D5 埋雷整合测试：真 TaskTool（max_concurrent=1）穿过 run_with_goal 两轮续跑，每轮各委派一次。若 _delegated 未每轮复位，第 2 轮委派会撞满配额被拒（回 [task error]）；复位后第 2 轮委派成功。全局调用序：[0]主-task_use [1]子-文本 [2]主-收口文本 [3]评估NO [4]主-task_use [5]子-文本 [6]主-收口文本 [7]评估YES。",
+  "responses": [
+    {"content": [{"type": "tool_use", "id": "t1", "name": "task", "input": {"description": "第一个子任务", "prompt": "读一下 workspace"}}]},
+    {"content": [{"type": "text", "text": "子任务1完成：workspace 已读。"}]},
+    {"content": [{"type": "text", "text": "第一轮：已委派并拿到结果，但还没统计完。"}]},
+    {"content": [{"type": "text", "text": "NO，还没达成。"}]},
+    {"content": [{"type": "tool_use", "id": "t2", "name": "task", "input": {"description": "第二个子任务", "prompt": "统计文件数"}}]},
+    {"content": [{"type": "text", "text": "子任务2完成：共 1 个文件。"}]},
+    {"content": [{"type": "text", "text": "第二轮：再次委派成功，目标达成。"}]},
+    {"content": [{"type": "text", "text": "YES，目标已达成。"}]}
+  ]
+}

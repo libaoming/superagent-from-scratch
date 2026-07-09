@@ -1,0 +1,9 @@
+{
+  "description": "F07 goal 续跑（达成场景）。全局调用序交错：run1 工作→goal 评估 NO→注入续跑→run2 工作→goal 评估 YES→收工。共 4 条：[0]=run1 收口文本、[1]=评估未达成、[2]=run2 收口文本、[3]=评估达成。",
+  "responses": [
+    {"content": [{"type": "text", "text": "第一步完成：已用 bash 列出 fixtures/workspace 目录。"}]},
+    {"content": [{"type": "text", "text": "NO，还差一步：尚未统计文件数量。"}]},
+    {"content": [{"type": "text", "text": "第二步完成：共 1 个文件 data.md，目标已达成。"}]},
+    {"content": [{"type": "text", "text": "YES，目标已达成。"}]}
+  ]
+}

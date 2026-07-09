@@ -1,0 +1,11 @@
+{
+  "description": "F07 次数熔断：每轮产出不同文本（不触发无进展熔断）、goal 始终 NO，靠续跑次数上限兜底停下。配 max_continuations=2 时：run1/2/3 各不同文本→第 3 轮 continuations 达上限→停。共 6 条交错：文本/NO ×3。",
+  "responses": [
+    {"content": [{"type": "text", "text": "进展 A：完成了列目录。"}]},
+    {"content": [{"type": "text", "text": "NO，还没完。"}]},
+    {"content": [{"type": "text", "text": "进展 B：完成了读文件。"}]},
+    {"content": [{"type": "text", "text": "NO，还没完。"}]},
+    {"content": [{"type": "text", "text": "进展 C：完成了统计。"}]},
+    {"content": [{"type": "text", "text": "NO，还没完。"}]}
+  ]
+}

@@ -19,4 +19,9 @@ verify 引用的 fixture 都在此。**fixture 先于代码**：feature 的 veri
 | `fake_llm/subagent_halt.json` | ✅ | F05 审查黄2：subagent max_turns 熔断，_final_text 回退占位 |
 | `skills/demo-skill/SKILL.md` | ✅ | F06：技能发现+斜杠激活主 fixture（frontmatter 两字段 + 正文） |
 | `skills/note-taker/SKILL.md` | ✅ | F06：第二个技能，验证多技能递归发现 |
+| `fake_llm/goal_continuation.json` | ✅ | F07：goal 续跑达成场景（工作/NO/工作/YES 交错，run 与评估共用序列） |
+| `fake_llm/goal_stale.json` | ✅ | F07：无进展熔断（连续相同文本→stale 累计到 2 停） |
+| `fake_llm/goal_cap.json` | ✅ | F07：次数熔断（不同文本始终 NO，靠 max_continuations 兜底） |
+| `fake_llm/goal_with_delegation.json` | ✅ | F07 审查 Y5：真 TaskTool 穿过续跑各委派一次，端到端证 _delegated 每轮复位（拆 D5） |
+| `fake_llm/clarification_flow.json` | ✅ | F08：ask_clarification 中断→state.interrupt 带出→补答案重进收口 |
 | `workspace/data.md` | ✅ | F02：read_file/bash 真实执行语料 |

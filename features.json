@@ -88,9 +88,9 @@
     {
       "id": "F07_todo_goal",
       "slice": "S5",
-      "status": "pending",
+      "status": "passing",
       "verify": {"type": "command", "run": "uv run pytest tests/test_s5_todo_goal.py -q", "fixture": "fixtures/fake_llm/goal_continuation.json"},
-      "verify_notes": "",
+      "verify_notes": "2026-07-09 verify 真跑 8 passed；全量 62 passed（存量零改动同绿=C4 第六次实证），src 666 行。src/goal.py：run_with_goal 外壳包纯净 run（依赖单向朝内：goal import loop，loop 不 import goal）+ _goal_met 同模型 YES/NO 判定 + 双熔断（turn_count≤40 每续跑重置 / 续跑次数≤8 + 连续 2 次无新 assistant 文本熔断）。src/middlewares/todo.py：WriteTodos 全量替换 state.todos + TodoMiddleware before_model 重注一条提醒（撤旧不累积）。State 加 todos/goal 字段。测试钉住：续跑到达成、两熔断各一条、turn_count 重置、计划外置抗压缩、中断优先于续跑。对抗审查 0 红 6 黄全清（fresh 子 agent）：Y5 补整合测试 test_delegation_quota_resets_across_continuations（真 TaskTool 穿过续跑端到端证 _delegated 复位=拆 D5 埋雷）；Y2/Y3/Y4 注释坦白（熔断锚在 assistant 文本、_is_reminder 哨兵边界、WriteTodos 依赖 run 原地 mutate 同一 State）；Y1 记：_goal_met 用 startswith('YES') 对『YESTERDAY 已完成』会假阳性早停——教学简化，生产版走类型化 evaluator（拓展练习 1）。收口面试通过（5 考点，两复训点 import 方向+loop 丢返回值均补上）。",
       "related": {"specs": ["SPEC.md#long-task"], "code": ["src/middlewares/todo.py", "src/goal.py"], "docs": []},
       "affected": "write_todos 工具 + goal 评估续跑（未达成→注入隐藏续跑消息，上限 N 次+无进展熔断）",
       "out_of_scope": "goal 评估用同一个模型简单判定，不做独立 evaluator 模型配置",
@@ -99,9 +99,9 @@
     {
       "id": "F08_clarification_hitl",
       "slice": "S5",
-      "status": "pending",
+      "status": "passing",
       "verify": {"type": "command", "run": "uv run pytest tests/test_s5_hitl.py -q", "fixture": "fixtures/fake_llm/clarification_flow.json"},
-      "verify_notes": "",
+      "verify_notes": "2026-07-09 verify 真跑 4 passed；全量 62 passed。src/middlewares/clarification.py：AskClarification 工具（惰性，run 只兜底回显）+ Clarification.after_model 看到 tool_use → 把问题 stash 进 state.interrupt 并返回 Interrupt → loop 收口（先于工具执行）。返回通道走 state.interrupt 字段（因 loop 见 after_model 非 None 只 return state、丢弃返回值对象、只用真值；C4 冻结 run 返回 State）。State 加 interrupt 字段（loop.py 用 from __future__ import annotations 惰性注解，核心不 import 扩展面）。恢复=补 tool_result（答案）+ 清 interrupt + 重进同一 run。测试钉住：中断先于工具执行（无 tool_result/turn_count 未自增/问题在 state.interrupt）、带答案重进收口、无澄清放行、工具惰性兜底。与 F07 边界：run_with_goal 中断优先于续跑（test_interrupt_preempts_continuation）。对抗审查随 F07 同批 0 红 6 黄全清（tool_use/tool_result 配对红线核过为绿）。收口面试通过。",
       "related": {"specs": ["SPEC.md#long-task"], "code": ["src/middlewares/clarification.py"], "docs": []},
       "affected": "ask_clarification 工具被 middleware 拦截→中断 loop 返回待答问题→带用户答案恢复继续",
       "out_of_scope": "不做多问题队列；恢复即重进 loop，不做断点序列化到磁盘",

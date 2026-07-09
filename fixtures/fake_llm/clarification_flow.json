@@ -1,0 +1,12 @@
+{
+  "description": "F08 HITL：模型缺信息→调 ask_clarification→中断收口（问题经 state.interrupt 带出）；调用方补 tool_result（用户答案）→重进 loop→自然收口。全局调用序：response[0]=run1 提问、response[1]=run2 带答案收口。",
+  "responses": [
+    {"content": [
+      {"type": "text", "text": "统计哪个目录你没说，我先问清楚。"},
+      {"type": "tool_use", "id": "clar-1", "name": "ask_clarification", "input": {"question": "你要统计哪个目录下的文件数？"}}
+    ]},
+    {"content": [
+      {"type": "text", "text": "好的，fixtures/workspace 下有 1 个文件：data.md。"}
+    ]}
+  ]
+}

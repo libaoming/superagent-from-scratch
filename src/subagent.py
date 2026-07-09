@@ -49,6 +49,11 @@ class TaskTool:
         self._max_turns = max_turns
         self._delegated = 0
 
+    def reset(self) -> None:
+        """复位委派计数——拆 D5 埋雷。run_with_goal 每轮 run 前调用，使 per-instance 配额
+        在续跑边界归零、不跨 run 泄漏（否则续跑第 max_concurrent+1 次委派起被误拒）。"""
+        self._delegated = 0
+
     def run(self, *, description: str, prompt: str) -> str:
         # description 只供模型自我说明任务，不参与执行；prompt 才是 subagent 的首条 user 消息
         if self._delegated >= self._max_concurrent:
