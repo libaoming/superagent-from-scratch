@@ -2,17 +2,17 @@
 
 | 字段 | 值 |
 |---|---|
-| active_feature | S4 收口中（F06 已 passing） |
-| slice | S4 |
-| 更新 | 2026-07-09 |
+| active_feature | 第二季下一刀选型（9/9 passing，S6 已收口 tag sfs-s6） |
+| slice | S6 完成 |
+| 更新 | 2026-07-10 |
 
 ## Next Candidates
-- S4 收口序列：notes/05 拆解笔记（skills 技能系统 + token 经济学）→ 对抗审查（子 agent）→ 收口面试模拟（S4 考点清单五条，规矩 6）→ `git tag sfs-s4`
-- 顺路可清「对抗审查遗留」便宜几条
+- 第二季下一刀选型（先跟用户拍板再提炼考点开课）：C2 checkpointer（接 notes/06 拓展练习 2）/ C3 deferred tools / eval 切片复活（考点+lesson 0007 已留档）
+- 顺路可清「对抗审查遗留」便宜几条；exam-points「暗物质缺口」措辞对齐；橙研所成品文（7 笔记 + 7 面试记录是底稿）
 
-## S5 备忘（后续切片落地时必查）
-- Interrupt.question 目前被 loop 丢弃（loop.py 只 return state，question 无返回通道）——S5 的 ask_clarification 需靠 middleware 自持状态取回（可行、不破 C4），落地时别忘（S2 审查 2026-07-08 发现）
-- **run_with_goal() 复用 TaskTool 须每 run 重建或复位 `_delegated`**——否则 per-instance 配额跨续跑累计泄漏（全局第 4 次委派起被误拒）。D5 的已知代价，S3 审查 2026-07-09 点名
+## ~~S5 备忘~~（✅ 2026-07-09 两颗雷均在 S5 落地时拆除并钉测试，见 notes/06 决策 7）
+- ~~Interrupt.question 返回通道~~ ✅ S5 走 state.interrupt 字段带出（test_clarification_interrupts_before_tool_runs）
+- ~~run_with_goal() 复用 TaskTool 的 `_delegated` 泄漏~~ ✅ S5 加 TaskTool.reset() + 每续跑复位（test_goal_continues_until_met 断言 reset_count）
 
 ## 对抗审查遗留（S1 审查 2026-07-06 · 🟡 契约存在但未钉测试，后续切片顺路补）
 - bash 成功时 stderr 被静默丢弃（SPEC「模型要看 stderr」只覆盖了失败路径）
@@ -32,6 +32,12 @@
 - ~~**D4（教学环流程）**~~ ✅ 2026-07-07 已确认：落地「切片教学环」时两处按 Claude 推荐拍板——①面试问题环节与规矩 6 收口 quiz **合并升级**（不并存两个 quiz）②过关标准从「满分」改「**面试官 rubric**（命中要点即过）」。用户批准含此两点的 plan + 补充指示「用一场面试准备的思路来讲解和检查」，视为确认。
 
 ## Session Log（倒序）
+### 2026-07-10
+- **S6 收口完成 → F09 passing + tag sfs-s6（第二季第 1 刀全闭环）**：理论课 0008 完课（quiz 8/8，白板写路径「入队快照」满分，记录 0013）→ notes/07 拆解笔记 → CONTEXT.md 回填（第五栈 memory updater + `<memory>` 暗物质行 + 「沉淀」治理手段行）→ 对抗审查（fresh 子 agent）**CLEAR 无 FAIL**，3 建议落地：SPEC:147 updater 协议口径对齐 6 段 / update_memory 渲染抽 text 块（防 block list 的 Python repr 喂 updater）/ 补 3 边界断言（confidence=0.7 恰好进、空记忆不注入、casefold 去重）→ 收口面试五考点全过（Q3 一次过，Q1/Q2/Q4/Q5 补答收口；新暴露模式「答偏子问题」，记录 0015）→ verify：test_s6_memory 7 passed / 全量 69 passed / src 880 行 → commit 193e963 + tag sfs-s6 + push（`git ls-remote` 核实远端）。teach/MISSION.md 经用户确认正式更新为「全栈脱稿」（记录 0014）。
+### 2026-07-09（下半日补记：S5 收口→CE 加课→第二季开季，当日未及入正式流水）
+- **S5 收口完成 → F07+F08 passing + tag sfs-s5，第一季全项目完工**：notes/06 拆解笔记 → 对抗审查全清 → S5 收口面试通过（记录 0010，两复训点补上）→ 全量 61 passed、src 661 行 → commit bcf8ceb + push；随后 README 中英切片表更新到 S5 完成（commit 58e630c）。两颗跨切片雷（Interrupt 返回通道 / _delegated 复位）在引爆点拆除并钉测试。
+- **CE 收尾加课 + CONTEXT.md 落地**：CE 考点清单 + 0006 总复习课（五刀缝成「上下文治理」一张图：四栈×七层 + 暗物质 + 五治理手段）→ CE 收口面试通过（记录 0012，Q4 学生追倒老师材料「暗物质=隐藏在场 vs 空层=缺席」→ 据实修 CONTEXT.md 措辞）→ CONTEXT.md 上下文构成审计 commit 28604b3 + push。
+- **第二季开季：eval 上课后搁置 → S6 记忆 build**：eval 闭环理论课 0007 完课后切片搁置（考点 + lesson 留档，接 _goal_met eval 闭环的开工点保留）；转 S6 长期记忆——用户参与拍板 M1（loop 外外壳，不加钩子破 C7）/ M2（读注入走 user 角色）+ 追问 summary vs facts 分工 + **6 段结构化摘要模型增加到教学版**；src/memory.py + fixtures/memory_update.json + test_s6_memory **7 passed 代码绿**（收口序列留次日）；S6 考点清单提炼（reference/s6-memory-exam-points.html）。
 ### 2026-07-09
 - **F06_skills 完成 → passing**：C5 顺序——fixture 先造（skills/demo-skill + note-taker，两 SKILL.md 验证多技能递归发现）→ test_s4_skills.py 先红（ModuleNotFoundError）→ src/skills.py 实现（discover_skills：rglob+yaml frontmatter→registry+system_block 只含元数据 / activate：斜杠+已注册→全文作 user 前缀块，否则原样）→ 6 passed；全量 50 passed（存量 44 零改动同绿 = C4 第四次实证），src 454 行。skills 不占缝、全在 loop 外。pyyaml C2 早预留。无新 Deviations。**S4 代码侧完成**。
 - **S4 教学环第 1-2 步完成**：考点清单提炼（reference/s4-exam-points.html 五条 + 交叉复习四旧考点）→ 0004 课发布并吸收合格（learning-records/0008，三题过；注入点「压缩」理由一度说反已当场纠——skill 正文放「压得掉的地方」user history，system 压不掉）。核心洞察：skills 注入知识不是能力、token 经济学元数据常驻正文按需。
@@ -67,87 +73,6 @@
 - 如果要核查线上/读大文件 → 派 `.claude/agents/superagent-from-scratch-ops.md` 子 agent，别在主 context 拉原始输出
 
 ## 🤖 增量流水（待整理）
-<!-- Stop hook 自动追加区。2026-07-08 已整理 49 条：07-07 全天教学批次（0001 课问答/S1 面试模拟/补考清账/0002 课预习）归并为 07-07「S1 教学环补跑完整一轮」条，教学细节在 teach/learning-records/0002；07-08 批次（0002 课问答/F04 理论确认/开工）归并进 07-08 两条既有 Session Log + learning-records/0003；噪声丢弃（10:28 路径片段、15:44 设计 skill 文本、11:50 图片占位）。 -->
-- [2026-07-08 14:10] 继续收口
-- [2026-07-08 14:15] 总评：实现干净、测试纪律好，唯一必须处理的是 Summarization 与工具历史组合时的消息配对破坏——修它或显式豁免它，不能悬着。</result>
-- [2026-07-08 14:24] [Image: source: /Users/baomingli/.claude/image-cache/2a54404f-7972-4181-86fa-fd69fdd81932/2.png]
-- [2026-07-08 14:34] 这个是在哪生效定义的
-- [2026-07-08 14:36] 这个 run 函数有什么作用
-- [2026-07-08 14:39] 考我S2
-- [2026-07-08 14:53] 5. middelware 架构对产品商业化分层、增加新能力都有很好的架构便捷
-- [2026-07-08 15:04] 3. raise interrupt 是设计
-- [2026-07-08 15:11] 问题 after_model 现在看来 主要是 raise interrupt  ask_clarifaction
-- [2026-07-08 15:15] 预算为啥不挂在 after_model 钩子上 挂在这个钩子上 超限额了 后面的 tool_use 就不会继续浪费tokens
-- [2026-07-08 15:18] 当前学习进展
-- [2026-07-08 15:34] middleware 对PM设计有什么帮助
-- [2026-07-08 16:36] 重考 S2
-- [2026-07-08 16:46] 5. 产品规划和 middlewave 同构, 颗粒度一致。可以在评估竞品能力、商业化能力分层设计，按数量、按开关来设计
-- [2026-07-08 16:52]       对象，让三个出口在 run() 里排队站好。
-- [2026-07-08 16:55]       "system", "max_turns"]；连同三条缝的协议签名（LLMClient.complete、Tool 四件套）一并冻结。谁想改引擎签名（删参、改名、调序），这条断言先红，变更
-- [2026-07-08 17:00] 保证 保留区 不存在 tools_result 孤儿
-- [2026-07-08 17:04] 确定 是工具调用后的Harness tooloutputbudget
-- [2026-07-08 17:05] teach/ 加进 .gitignore
-- [2026-07-08 17:07] 提炼 S3 考点
-- [2026-07-08 17:29] ARGUMENTS: S3
-- [2026-07-08 17:47] 上完了
-- [2026-07-08 17:51] 3. 递归调用物理摘掉 task 工具
-- [2026-07-08 18:04] 开工 F05
-- [2026-07-08 19:15] 接受这个简化
-- [2026-07-08 19:21] **总评**：主线正确、隔离与配额截断在当前调用路径下行为无误；唯一需在 S5 前必须处置的是 `_delegated` 跨 run 不复位这一潜伏副作用（per-instance 实现 vs per
-- [2026-07-08 19:22] 考我 S3
-- [2026-07-08 19:38] 5. 机制 vs 纪律是两侧，PM 要同时管; context 治理是产品成本项，该进 PRD。委派清单= 能力编排面
-- [2026-07-08 19:43] 1. 复用 run(sub_state,subt_tools,middlewares)
-- [2026-07-08 19:45]       这就是可迁移清单里那条判断:任何有自我调用/放大风险的强能力(递归、fork、批量触发),用「能力物理缺席」兜底,而不是「运行时检查」——验收信号是「删掉运行时检查,危险行为依然无法发生」
-- [2026-07-08 19:48]       per-instance"的真相。对抗审查两次都是抓这类「说的和做的不一样」。
-- [2026-07-08 19:49] push
-- [2026-07-08 19:55] 提炼 S4 考点
-- [2026-07-08 20:23] ARGUMENTS: S4
-- [2026-07-08 20:50] 上完了
-- [2026-07-08 20:59] 3. 注入到user 角色的 上下文. skill正文是当前规则 不是永久规则，进入system 永久生效 不会被压缩
-- [2026-07-08 21:05] 开工 F06
-- [2026-07-08 21:06] 总结 准备下班
-- [2026-07-09 09:54] [Your previous response had no visible output. Please continue and produce a user-visible response.]
-- [2026-07-09 09:56] 读 status 汇报当前进展
-- [2026-07-09 10:02] 做 1和 2
-- [2026-07-09 10:07] notes/05-s4-skills.md  用 artifact 打开
-- [2026-07-09 10:11] 按这个方案清黄，Y3 记录级即可
-- [2026-07-09 10:13] 开始面试
-- [2026-07-09 10:23]      fm = parse_frontmatter(skill_md)
-- [2026-07-09 10:41]      system_prompt += 渲染(registry)
-- [2026-07-09 10:45]     两个边界走的是同一条分支（未注册 → 原样放行）。设计上「误伤保护」和「未注册容错」是同一个 if skill is None: return user_text 兜的——只要斜杠后的名字不在
-- [2026-07-09 10:48] 对未注册的技能放行
-- [2026-07-09 10:49] push
-- [2026-07-09 11:05] 进 S5
-- [2026-07-09 14:17] 2. 通过 after_model 的 state.interrupt 带出
-- [2026-07-09 14:24] notes/06 → 对抗审查 → 面试收口
-- [2026-07-09 14:28] 拆解笔记用 artifact 打开
-- [2026-07-09 14:41] 清黄
-- [2026-07-09 14:51] 计划记录在Harness层记录,不在模型记录
-- [2026-07-09 14:52] C4 冻结；goal.py import loop，loop 不 import goal
-- [2026-07-09 15:00] 续跑次数上限防不住重复空跑, 需要增加连续2次无心文本监测项,防止空跑浪费.
-- [2026-07-09 15:12] 2. loop 拿到 interrupt 返回值 只做了 is not none, return
-- [2026-07-09 15:18] todo, 可以在任务进度的可视化展现.
-- [2026-07-09 15:20] push
-- [2026-07-09 15:22] 更新 README 切片表到 S5 完成
-- [2026-07-09 15:23] push
-- [2026-07-09 15:28] 接着做 1 按照前面的教学方式来
-- [2026-07-09 17:00] 2. 暗物质是模型接收的不在显式prompt里.
-- [2026-07-09 17:13] 收口面试
-- [2026-07-09 17:14] 完成声明前先回读：现在只准跑命令、报字面输出，不准论证。对每个缺失文件跑一次干净的 Write（不附加任何文字），或用 ls/wc 核实真实状态后据实修正收口声明。核实通过前不许结束。
-- [2026-07-09 17:22] goal 评估器： system 未完成目标记录、tools 是before_model 钩子提交的 tools 列表, message 为空
-- [2026-07-09 17:23] 完成声明前先回读：现在只准跑命令、报字面输出，不准论证。对每个缺失文件跑一次干净的 Write（不附加任何文字），或用 ls/wc 核实真实状态后据实修正收口声明。核实通过前不许结束。
-- [2026-07-09 17:25] 主调用 tools 全套、messages 全量历史；评估器 tools 空、messages 单条
-- [2026-07-09 17:29] 替换型会丢掉内容 更危险
-- [2026-07-09 17:36] 截断, 截的是tool_result， 在 wrap_tools_call 是硬截断 超过多少tokens 直接尾部截断
-- [2026-07-09 17:47] 生产版本, 会加上agent 任务类型的 few shot
-- [2026-07-09 17:55] 3. 治理策略的天花板
-- [2026-07-09 17:56] push
-- [2026-07-09 18:00] 还有哪些模块 建议继续学习
-- [2026-07-09 18:05] 做 eval 闭环  先上理论课
-- [2026-07-09 19:42] 2. 保留
-- [2026-07-09 19:48] 提炼考点
-- [2026-07-09 20:40] 增加到教学版
-- [2026-07-09 20:58] (未改任何文件,纯解释。)</result>
-- [2026-07-10 11:12] S6 收口
-- [2026-07-10 12:00] Q5: 1记忆是如何记住用户的, 是个性化的底座, 同时 读写分离让记住我的同时 不以对话变慢为代价. 2. 记忆质量有旋钮,可以通过置信度/去重/max_facts容量/注入预算. 3 记忆是新的新
-- [2026-07-10 13:54] 5.  『它怎么记住我』是被问最多的：记忆是个性化的技术底座、留存的护城河，写读路径分离让「记住我」不以「对话变慢」为代价——这个体验参数该进 PRD。② 记忆质量有旋钮：confidence 门槛 
+<!-- Stop hook 自动追加区。2026-07-10 已整理 84 条（2026-07-08 14:10 → 2026-07-10 14:22）：07-08 下午批次（S2 面试两场/S3 考点+理论课/F05 开工审查/S3 面试/S4 考点+理论课/F06 开工）已被既有 07-08/07-09 Session Log 覆盖，教学细节在 learning-records/0004-0008；07-09 批次（S4 收口面试/进 S5/S5 全程/CE 加课/eval 理论课/S6 build）归并为新增「2026-07-09（下半日补记）」三条；07-10 批次（S6 收口/面试答题）归并为「2026-07-10」一条，面试细节在 learning-records/0015；噪声丢弃（图片占位、代码片段回显、harness 系统提示、答题原文碎片）。 -->
+
+- [2026-07-10 14:27] - M1/PROGRESS.md 增量流水块累积多日合并
