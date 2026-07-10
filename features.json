@@ -106,6 +106,17 @@
       "affected": "ask_clarification 工具被 middleware 拦截→中断 loop 返回待答问题→带用户答案恢复继续",
       "out_of_scope": "不做多问题队列；恢复即重进 loop，不做断点序列化到磁盘",
       "blocking": ["F03_middleware_protocol"]
+    },
+    {
+      "id": "F09_memory",
+      "slice": "S6",
+      "status": "passing",
+      "verify": {"type": "command", "run": "uv run pytest tests/test_s6_memory.py -q", "fixture": "fixtures/fake_llm/memory_update.json"},
+      "verify_notes": "2026-07-10 收口：test_s6_memory 7 passed，全量 69 passed（存量 62 零改动同绿，C4 第七次实证），src 880 行（≤1500）。对抗审查 fresh 子 agent CLEAR 无 FAIL，3 条建议已落地（SPEC:147 updater 协议口径对齐 6 段 / update_memory 渲染抽 text 块防 repr 喂 updater / 补 3 边界断言：confidence=0.7 恰好进、空记忆不注入、casefold 去重）后重验同绿。收口面试五考点全过（记录 teach/learning-records/0015）。",
+      "related": {"specs": ["SPEC.md#memory"], "code": ["src/memory.py"], "docs": []},
+      "affected": "run 收口→过滤消息→入队快照（不立即更新）→去抖 flush→后台 llm 把旧记忆+新对话 merge 成 JSON 落盘→下轮 run 前把记忆按 confidence 拼成 <memory> 作 user 角色注入首条 user 前（权限隔离）",
+      "out_of_scope": "不做检索/embedding（全量注入）；不做多租户 per-user/per-agent；不做 tiktoken 精确 token 预算（len//4 粗算）；不做 async 连接池规避（后台线程同步 invoke）；不做原子写/prefix-cache/ID-swap；不做手动 CRUD",
+      "blocking": ["F01_agent_loop"]
     }
   ]
 }

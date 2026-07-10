@@ -3,17 +3,16 @@
 > 每次 session 第一个读的文件。收尾必更新本文件。
 
 ## 一句话状态
-2026-07-09 🏁 **全项目完工（8/8 passing）**：S5 收口完成——F07_todo_goal + F08_clarification_hitl 全绿。src/goal.py（run_with_goal 外壳套纯净 run，依赖单向朝内）+ todo.py（计划外置 state.todos）+ clarification.py（中断走 state.interrupt 返回通道）。State 加 todos/goal/interrupt 三字段，run() 零改动（C4 第六次实证）。verify：S5 11 passed（F07 8 + F08 4），全量 **62 passed**（存量 51 零改动同绿），src **666 行**（预算 1500）。**对抗审查 0 红 6 黄全清**（Y5 补整合测试端到端焊死 D5 埋雷 + Y2/Y3/Y4 注释 + Y1 记 verify_notes）+ **收口面试通过**（两复训点 import 方向/loop 丢返回值均补上）+ notes/06 拆解笔记（系列完，含全项目收官表）+ Artifact 留档。tag `sfs-s5` 待提交。S1-S4 已 tag+push（sfs-s1..s4）。仓库公开：https://github.com/libaoming/superagent-from-scratch。五刀全砍完：循环→中间件→委派→技能→长任务。
+2026-07-10 **S6 长期记忆收口完成（9/9 passing, tag sfs-s6）——第二季第 1 刀全闭环**。src/memory.py（写路径旁路=入队去抖后台 merge / loop 外外壳 run_with_memory，run() 零改动 C4 第七次实证 / updater 增量 merge「LLM 提议、代码定夺」/ 读注入 user 角色权限隔离 M2 / 6 段摘要 + facts）。收口五件全清：notes/07 拆解笔记 ✅、CONTEXT.md 回填（第五栈 + `<memory>` 暗物质 + 沉淀手段）✅、对抗审查 CLEAR（3 建议落地：SPEC:147 口径对齐 / updater 渲染抽 text 块 / 补 3 边界断言）✅、收口面试五考点全过（teach 记录 0013/0015，MISSION 已更新为全栈）✅、F09 passing + tag ✅。verify：test_s6_memory **7 passed**，全量 **69 passed**，src **880 行**（预算 1500）。eval 切片仍搁置（考点+lesson 0007 留档）。仓库：https://github.com/libaoming/superagent-from-scratch。
 
-## 下次入口（所有切片完成，进入收尾/开源打磨）
-1. 读本文件 → 读 `M1/PROGRESS.md`（有「增量流水待整理」块累积多日，需合并进正式 Session Log 后清空）
-2. push 时机：S5 已 commit+tag（若尚未 push，`git push && git push --tags`）
-3. 剩余收尾候选（非切片，按需挑）：
-   - README（英文主 + README.zh-CN）切片表更新到 S5 完成 + 五篇 notes 链接
-   - CONTEXT.md 补画（LLM 项目第四件，S1-S5 一直欠着；现在回填 7 层上下文构成审计）
-   - M1/PROGRESS.md 增量流水整理 + Session Log 收尾
-   - features.json 8/8 passing 终检、STATUS 定稿
-   - 可选：全项目复盘笔记 / 橙研所成品文（边学边开源的「学」的产物）
+## 下次入口
+1. 读本文件 → `M1/PROGRESS.md`（「增量流水待整理」块累积多日，需合并进正式 Session Log 后清空——上次收口未做）
+2. **当前应做：第二季下一刀选型**（三候选，先跟用户拍板再提炼考点开课）：
+   - C2 checkpointer（断点持久化，接 notes/06 拓展练习 2）
+   - C3 deferred tools（工具延迟加载）
+   - eval 切片复活（考点 + lesson 0007 已留档，接 _goal_met 的 eval 闭环）
+3. 之后可选：M1 增量流水整理；exam-points「暗物质缺口」措辞对齐；橙研所成品文（7 笔记 + 7 面试记录是底稿）
+4. 教学侧下切片注意（记录 0015）：面试加「只问证据/只问备选」单点题练审题——用户新暴露模式是「答偏子问题」
 
 ## 关键技术事实
 - 技术栈：Python 3.12 + uv + pytest；**零框架依赖**（不用 LangChain/LangGraph，loop 自己写，直接调 LLM API）

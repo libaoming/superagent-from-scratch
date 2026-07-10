@@ -1,0 +1,7 @@
+{
+  "description": "F09 记忆写路径。全局调用序：[0]=主对话自然收口（run 消耗）；[1]=updater 的增量指令 JSON（queue.flush 时消耗），6 段 shape：填了 user.workContext + user.topOfMind，其余段留空（空=不改）；3 条 newFacts 中 confidence 0.5 那条应被 0.7 门槛砍掉。证「写路径独立于对话循环」：run 返回后记忆仍空，flush 后才更新。",
+  "responses": [
+    {"content": [{"type": "text", "text": "明白了，你在做 superagent-from-scratch——一个千行级、纯 Python 复刻 deer-flow 的教学项目。需要我帮忙时随时说。"}]},
+    {"content": [{"type": "text", "text": "{\"user\": {\"workContext\": \"在做教学向开源项目 superagent-from-scratch：纯 Python、千行级、复刻 deer-flow 核心架构。\", \"personalContext\": \"\", \"topOfMind\": \"S6 长期记忆切片\"}, \"history\": {\"recentMonths\": \"\", \"earlierContext\": \"\", \"longTermBackground\": \"\"}, \"newFacts\": [{\"content\": \"项目 superagent-from-scratch：千行级复刻 deer-flow、零框架依赖\", \"confidence\": 0.95, \"category\": \"context\"}, {\"content\": \"偏好教学向、边学边开源、脱稿讲清的工作方式\", \"confidence\": 0.85, \"category\": \"preference\"}, {\"content\": \"一条低置信度噪声，应被 0.7 门槛砍掉\", \"confidence\": 0.5, \"category\": \"knowledge\"}], \"factsToRemove\": []}"}]}
+  ]
+}

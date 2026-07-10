@@ -137,6 +137,20 @@ task(description: str, prompt: str) -> str   # 返回 = subagent 最终文本，
   **落点（2026-07-04 拍板 · Q2=A）**：外层 `run_with_goal()` 包裹纯净 `run()`——loop 签名不动（C4 不受扰），续跑是 harness 外壳，外置本身即教学点「long-horizon 是 harness 套的目标闭环」。**turn_count 每次续跑重置**（单次 run 上限 40 不变），续跑总量由次数上限 8 独立管控——两个熔断各管一层（盲区回填）。
 - `ask_clarification`（Tool + Middleware 配合）：工具本身不执行任何东西；`Clarification` middleware 在 after_model 看到该 tool_use → 返回 Interrupt(question)，loop 收口把问题带出去；调用方拿到用户答案后把 tool_result 补进 messages 重新 run——**中断 = 保存现场的正常收口，恢复 = 带着答案重进循环**，没有魔法。
 
+### 长期记忆 {#memory}（第二季 · S6）
+
+核心 aha：**记忆的「写路径」是一条独立于对话循环的旁路**——对话不因「要更新记忆」而变慢/变脏，记忆异步长在旁边。对照 S2 摘要（session 内压缩）：这是**跨 session 记忆**。deer-flow 用 `after_agent`/`before_agent` 中间件钩子；本项目这两个是 **per-run** 操作，而 middleware 协议只有 per-turn 钩子（C7 冻结）。
+
+**落点（2026-07-09 拍板 · M1=外壳、M2=user role）**：
+- **M1 挂载点 = loop 外的 harness 外壳 `run_with_memory()`**——与 S4 skills、S5 goal 同构，`run()` 零改动（C4）。备选「给协议加 before_agent/after_agent 钩子」被否决（破 C7；本项目核心纪律是协议冻结）。「写路径独立于对话循环」的 aha 在外壳形态下最干净——memory 字面就在 loop 外。
+- **写路径**：`run()` 收口后 → 过滤消息（只留 human + 无 tool_call 的最终 ai）→ **入队快照**（不是立即更新）→ 去抖（Timer/debounce，同 key 折叠）→ 后台调 llm：把「旧记忆 + 新对话」merge 成新记忆落盘。**去抖 + 后台线程是必留内核**（否则丢了「异步、不阻塞对话」）。测试经 `flush()` 同步排空、不依赖真实 Timer。
+- **updater 协议**：llm 出**增量指令** `{user, history, newFacts, factsToRemove}`（user/history 即下方 6 段摘要），代码做**确定性 merge**（6 段非空才覆盖 + facts 过 confidence 门槛 + 内容去重 + max_facts 截断）——**不是全量重写**，防「LLM 手一抖把整个记忆改乱」。
+- **M2 读路径 = 注入成 user 角色**（2026-07-09 拍板）：`run()` 前加载记忆，按 confidence 降序拼成 `<memory>…</memory>`，作为 **user 角色**消息注入首条 user 前（**不给 system 权限**）。理由：记忆源自用户、可被污染（OWASP LLM01）——**框架数据 vs 用户数据的信任边界**，是保留的安全教学点。
+
+**三缝协议冻结（C7 延伸）**：① `after run` → queue 的「对话快照入队」；② queue → updater 的 `(messages, old_memory) → update_json`；③ `before run` 的 `<memory>` 注入形态（user 角色）。
+
+教学版数据模型**沿用 deer-flow 结构**：单文件全局 JSON = **6 段结构化摘要**（`user` 按画像侧面切：workContext 工作/personalContext 个人/topOfMind 当前焦点；`history` 按时间远近切：recentMonths/earlierContext/longTermBackground）+ 带类型 `facts` 列表 `[{content, confidence, category}]`。段级更新语义：updater 出非空字符串才覆盖该段（空=不改）。**砍**：per-slot updatedAt、检索/embedding（deer-flow 本就全量注入、无检索）、多租户 per-user/per-agent、tiktoken 精确预算、trace、async 连接池规避、原子写、prefix-cache/ID-swap、上传洗涤、手动 CRUD。
+
 ## 关键约束
 
 | # | 约束 | 检验方式 |
