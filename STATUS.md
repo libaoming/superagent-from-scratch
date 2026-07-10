@@ -5,11 +5,12 @@
 ## 一句话状态
 2026-07-10 **S7 断点持久化收口完成（10/10 passing, tag sfs-s7）——第二季第 2 刀全闭环，一天两刀（S6+S7）**。src/checkpoint.py（84 行：per-step durability=缝① Checkpointer 在 before_model 每轮存 + 外壳 run_with_checkpoint 收口终存，两件套缺一不可 / load_state 悬空双语义兜底：崩溃悬空补 [interrupted]、待答悬空留调用方，`state.interrupt is None` 单闸 / 恢复与 S5 三步同构）。「节奏定挂载」与 S6 成对：per-run→外壳、per-turn→缝①（缝①第一次收持久化住户，C7/C4 零改动第八次实证）。deer-flow 对照史上最极端：0% 内核+100% 胶水。**教学环反哺开发第一例**：测试套件由理论课上用户先设计（teach/0016）、开发照单实现。收口全清：notes/08 ✅、CONTEXT 回填（[interrupted] 暗物质行，无新调用栈）✅、对抗审查 CLEAR（3 建议落地，含「悬空兜底对自产档不可达」的触发面说实）✅、收口面试 13 问三轮全过（teach/0017）✅。verify：**5 passed** / 全量 **74 passed**，src **968 行**（预算 1500）。eval 切片仍搁置。仓库：https://github.com/libaoming/superagent-from-scratch。
 
-## 下次入口
+## 下次入口（S8 deferred tools 已开工）
 1. 读本文件 → `M1/PROGRESS.md`
-2. **当前应做：第二季第 3 刀选型**（先跟用户拍板再提炼考点开课）：C3 deferred tools（工具延迟加载）/ eval 切片复活（考点+lesson 0007 留档，接 _goal_met eval 闭环）/ 或收摊出橙研所成品文（8 笔记 + 8 面试记录是底稿，教学环反哺开发是新亮点）
-3. 教学侧下切片注意（0017）：面试改「一次只发一问」串行模式试一轮——区分「多问漏答」是审题习惯还是工作记忆容量
-4. 杂项可选：exam-points「暗物质缺口」措辞对齐
+2. **第二季第 3 刀已拍板 = S8 deferred tools（F11）**，开工三件套已落：SPEC #deferred-tools（M1=loop 内每轮过滤——run() 零改动 8 连胜光明正大终止、C4 签名仍冻结；M2=双通道晋升）、features.json F11（verify=test_s8_deferred.py，fixture=deferred_tools_flow.json 待造）、考点清单 s8-deferred-tools-exam-points.html。deer-flow 实况：tool_search 四件 397 行（内核 ~250），只 defer MCP 工具，露纯名字清单、缝③元工具、双通道晋升、wrap_tool_call 拦截。**跨切片账：state.promoted 新字段 ⇒ S7 save_state 字段表同步 + roundtrip 断言**
+3. **当前应做：上 0010 理论课**（已发布：teach/lessons/0010 + Artifact，含 Claude Code 活教材彩蛋；用户尚未上课/吸收检查/记录 0018）→ 上完开工 F11（C5 顺序）→ notes/09 → 对抗审查 → 收口面试（**「一次一问」串行模式**，对照 S7 批量模式测漏答率）→ tag sfs-s8
+   ⚠️ S8 开工三件套改动**未提交**（SPEC #deferred-tools / features.json F11 / STATUS / PROGRESS 表头）——下次收口时随 F11 一并 commit，或开工前先 docs commit
+4. 之后可选：eval 切片复活；橙研所成品文；exam-points「暗物质缺口」措辞对齐
 
 ## 关键技术事实
 - 技术栈：Python 3.12 + uv + pytest；**零框架依赖**（不用 LangChain/LangGraph，loop 自己写，直接调 LLM API）

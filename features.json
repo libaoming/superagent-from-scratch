@@ -128,6 +128,17 @@
       "affected": "Checkpointer middleware 在 before_model 每轮把 State 全量 JSON 落盘（缝①）→ run_with_checkpoint 外壳收口终存 → 崩溃/中断后 load_state(path) 重建 State（含悬空 tool_use 兜底：末条 assistant 带 tool_use 无配对 → 补 [interrupted] tool_result）→ 补答案/清 interrupt 重进 run()（与 S5 恢复同构）",
       "out_of_scope": "不做 checkpoint_id 谱系/time-travel/回滚（latest-only 单文件）；不做多后端（sqlite/postgres）工厂与单例锁；不做 pending_writes；不做多租户/TTL/迁移；不做并发写锁；不做 Command(resume) 兼容层；不做原子写",
       "blocking": ["F03_middleware_protocol", "F08_clarification_hitl"]
+    },
+    {
+      "id": "F11_deferred_tools",
+      "slice": "S8",
+      "status": "pending",
+      "verify": {"type": "command", "run": "uv run pytest tests/test_s8_deferred.py -q", "fixture": "fixtures/fake_llm/deferred_tools_flow.json"},
+      "verify_notes": "",
+      "related": {"specs": ["SPEC.md#deferred-tools"], "code": ["src/deferred.py", "src/loop.py", "src/checkpoint.py"], "docs": ["notes/05-s4-skills.md（知识层按需注入的对仗前作）"]},
+      "affected": "deferred 标记工具不进绑定、名字渲进 system 尾部清单 → 模型调 tool_search（select:/关键词，max 5）→ 双通道晋升（当轮 tool_result 给 schema JSON + state.promoted 记名）→ loop 每轮按 promoted 过滤后提交（run() 内部 S2 后首改，签名不动）→ 缝① DeferredGuard 拦未晋升调用回教学式 error → S7 save/load 字段表同步 promoted（sorted list ⇄ set）",
+      "out_of_scope": "不做 catalog_hash 防目录漂移；不做 fail-closed RuntimeError；不做 +prefix 语法/regex 降级；不做 MCP 标签（deferred: bool 字段即可）；不做晋升驱逐/降级；不做 subagent 镜像装配；不做配置开关",
+      "blocking": ["F01_agent_loop", "F03_middleware_protocol"]
     }
   ]
 }

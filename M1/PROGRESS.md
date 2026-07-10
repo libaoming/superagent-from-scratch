@@ -2,13 +2,14 @@
 
 | 字段 | 值 |
 |---|---|
-| active_feature | 第二季下一刀选型（9/9 passing，S6 已收口 tag sfs-s6） |
-| slice | S6 完成 |
+| active_feature | S8 deferred tools 开工序列（10/10 passing，S7 已收口 tag sfs-s7） |
+| slice | S8 开工中 |
 | 更新 | 2026-07-10 |
 
 ## Next Candidates
-- 第二季下一刀选型（先跟用户拍板再提炼考点开课）：C2 checkpointer（接 notes/06 拓展练习 2）/ C3 deferred tools / eval 切片复活（考点+lesson 0007 已留档）
-- 顺路可清「对抗审查遗留」便宜几条；exam-points「暗物质缺口」措辞对齐；橙研所成品文（7 笔记 + 7 面试记录是底稿）
+- **进行中：S8 deferred tools（2026-07-10 用户拍板）**——调研→拍板→SPEC #deferred-tools→F11→考点→理论课→C5 开发→收口
+- 备选下刀：eval 切片复活（考点+lesson 0007 已留档）；橙研所成品文（8 笔记 + 8 面试记录是底稿，教学环反哺开发是新亮点）
+- 顺路可清「对抗审查遗留」便宜几条；exam-points「暗物质缺口」措辞对齐
 
 ## ~~S5 备忘~~（✅ 2026-07-09 两颗雷均在 S5 落地时拆除并钉测试，见 notes/06 决策 7）
 - ~~Interrupt.question 返回通道~~ ✅ S5 走 state.interrupt 字段带出（test_clarification_interrupts_before_tool_runs）
@@ -87,3 +88,7 @@
 - [2026-07-10 17:29]  5. 落进产品的sla 质量保证. 恢复语义是产品定义不是工程细节, 哪些场景可以丢半轮 哪些场景不能丢半轮, 恢复后的重放副作用 哪些操作需要人工确认(无幂等)
 - [2026-07-10 17:31]     ① deer-flow 实况：0% 内核 + 100% 胶水——存/取/恢复内核 0 行自研，全在 LangGraph 官方 saver 库里（InMemory/Sqlite/Postgres
 - [2026-07-10 17:33] S7 收口
+- [2026-07-10 17:36]     checkpoint 内核已被框架商品化（deer-flow 0% 自研、458 行全是胶水）——PM 该「内核用库、差异化投胶水」（多租户/回滚/审计/恢复语义），不为「自研持久化」立项；但
+- [2026-07-10 17:39] C3 deferred tools
+- [2026-07-10 17:51] **该砍**：catalog_hash 防漂移（教学版目录构建后不变，无持久化跨会话晋升）、fail-closed RuntimeError、pydantic 配置模块、regex 降级容错（保留也就
+- [2026-07-10 20:01] 总结 准备下班

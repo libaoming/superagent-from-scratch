@@ -164,6 +164,22 @@ task(description: str, prompt: str) -> str   # 返回 = subagent 最终文本，
 
 **数据模型**：单文件 latest-only JSON（调用方给 path，即最简 thread key）；State 五字段全 JSON 友好，`Interrupt` ⇄ `{"question": ...} | null`。**砍**：checkpoint_id 谱系/time-travel/回滚、多后端工厂与单例锁、pending_writes、多租户/TTL/迁移、并发写锁、`Command(resume)` 兼容层、原子写。
 
+### deferred tools {#deferred-tools}（第二季 · S8）
+
+核心 aha：**tools 定义是上下文第 2 层的常驻成本——deferred tools 把「能力」也做成按需注入：未加载时模型只见名字，搜索命中才晋升出完整 schema**。与 S4 skills 完美对仗：skills 是**知识层**按需注入（元数据常驻 / 正文激活才进），deferred tools 是**能力层**按需注入（名字常驻 / schema 晋升才进）。deer-flow 实况（子 agent 核实 2026-07-10）：`tool_search` 四件 397 行（内核 ~250），只 defer MCP 工具，动机双写在配置注释里——省上下文 + 提工具选择准确率。
+
+**落点（2026-07-10 拍板 · M1=loop 内过滤、M2=双通道）**：
+- **露**：deferred 工具（`deferred: bool` 字段标记，教学版不做 MCP 标签）不进 tools 绑定，只在 system 尾部渲染 `<available-deferred-tools>` **纯名字清单**（deer-flow 连摘要都不给——description 藏着但可被搜索命中）。名单静态常驻 = prompt cache 友好；晋升改变 tools 集合、必然破一次前缀缓存，机制固有代价。
+- **搜（缝③ 元工具）**：`tool_search(query)` 支持 `select:Name1,Name2` 精确取 + 关键词匹配（搜 name+description）两种，最多回 5 个。**砍** deer-flow 的 `+prefix` 语法与 regex 降级容错。
+- **M1 藏 = loop 内每轮过滤（run() 零改动的 8 连胜到此终止，C4 签名仍冻结）**：schema 构建移进循环体，每轮按 `state.promoted`（State 新字段）过滤后提交。为什么必须碰 loop 内部：**治理对象就是「每轮的 tools 提交点」，而提交点在 loop 里**——三钩子只收 state、碰不到 tools 参数（C7 冻结不许改签名）。备选「外壳重进」（借 S5 中断语义，每次晋升多一轮收口/重进往返）与「stub schema 渐进披露」（机制失真：没有真藏/晋升/拦截）被否决。deer-flow 的对应物本就是 middleware 每轮覆写 request.tools——loop 内过滤是它在本架构下的最诚实等价。
+- **M2 晋升 = 双通道（deer-flow 同款）**：tool_search 命中后 ① 当轮 tool_result 直接给完整 schema JSON（**当轮可读**，能规划参数）② 名字写进 `state.promoted`，下轮过滤放行、schema 进绑定（**下轮可调**）。
+- **拦（缝① guard）**：**藏的是 schema 不是工具本身**——执行层 tool_map 始终持有全部工具。录制/幻觉可能调未晋升工具，`DeferredGuard` 在 wrap_tool_call 拦截、回教学式 error tool result（「工具 X 未加载，先调 tool_search…」）教模型自救而非崩溃。
+- **跨切片账（S7 联动）**：`state.promoted` 入列 State ⇒ S7 `save_state`/`load_state` 的字段表必须同步（否则 checkpoint 恢复后晋升丢失、已读 schema 的工具重新隐身）——S8 落地时一并改 + 断言进 roundtrip 测试。set 不可 JSON 化：存 sorted list、载回 set。
+
+**教学骨架一句话**：露（system 名单）— 搜（缝③ tool_search）— 晋升（双通道进 state）— 藏（loop 提交点过滤）— 拦（缝① guard）。三条缝 + loop 提交点各司其职，这是全项目第一个「四个部位协同」的切片。
+
+**砍**（deer-flow 产品化 ~150 行）：catalog_hash 防目录漂移、fail-closed RuntimeError、pydantic 配置开关、`+prefix`/regex 降级、MCP 标签模块、subagent 镜像装配、晋升驱逐/降级。
+
 ## 关键约束
 
 | # | 约束 | 检验方式 |
