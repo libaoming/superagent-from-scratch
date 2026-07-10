@@ -117,6 +117,17 @@
       "affected": "run 收口→过滤消息→入队快照（不立即更新）→去抖 flush→后台 llm 把旧记忆+新对话 merge 成 JSON 落盘→下轮 run 前把记忆按 confidence 拼成 <memory> 作 user 角色注入首条 user 前（权限隔离）",
       "out_of_scope": "不做检索/embedding（全量注入）；不做多租户 per-user/per-agent；不做 tiktoken 精确 token 预算（len//4 粗算）；不做 async 连接池规避（后台线程同步 invoke）；不做原子写/prefix-cache/ID-swap；不做手动 CRUD",
       "blocking": ["F01_agent_loop"]
+    },
+    {
+      "id": "F10_checkpointer",
+      "slice": "S7",
+      "status": "passing",
+      "verify": {"type": "command", "run": "uv run pytest tests/test_s7_checkpointer.py -q", "fixture": "fixtures/fake_llm/checkpoint_crash.json"},
+      "verify_notes": "2026-07-10 收口：test_s7_checkpointer 5 passed，全量 74 passed（存量 69 零改动同绿，C4 第八次实证），src 968 行（≤1500）。测试套件由教学环反哺（理论课上用户先设计，记录 teach/0016）。对抗审查 CLEAR，3 建议落地（F10 fixture 元数据纠正 / SPEC+docstring 补注册序语义与悬空兜底触发面说实 / encoding=utf-8 显式化）后重验同绿。收口面试 13 问三轮全过（记录 teach/0017）。",
+      "related": {"specs": ["SPEC.md#checkpointer"], "code": ["src/checkpoint.py", "src/middleware.py", "src/middlewares/clarification.py"], "docs": ["notes/06-s5-long-task.md（拓展练习 2 = 本切片前身）"]},
+      "affected": "Checkpointer middleware 在 before_model 每轮把 State 全量 JSON 落盘（缝①）→ run_with_checkpoint 外壳收口终存 → 崩溃/中断后 load_state(path) 重建 State（含悬空 tool_use 兜底：末条 assistant 带 tool_use 无配对 → 补 [interrupted] tool_result）→ 补答案/清 interrupt 重进 run()（与 S5 恢复同构）",
+      "out_of_scope": "不做 checkpoint_id 谱系/time-travel/回滚（latest-only 单文件）；不做多后端（sqlite/postgres）工厂与单例锁；不做 pending_writes；不做多租户/TTL/迁移；不做并发写锁；不做 Command(resume) 兼容层；不做原子写",
+      "blocking": ["F03_middleware_protocol", "F08_clarification_hitl"]
     }
   ]
 }

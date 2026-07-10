@@ -151,6 +151,19 @@ task(description: str, prompt: str) -> str   # 返回 = subagent 最终文本，
 
 教学版数据模型**沿用 deer-flow 结构**：单文件全局 JSON = **6 段结构化摘要**（`user` 按画像侧面切：workContext 工作/personalContext 个人/topOfMind 当前焦点；`history` 按时间远近切：recentMonths/earlierContext/longTermBackground）+ 带类型 `facts` 列表 `[{content, confidence, category}]`。段级更新语义：updater 出非空字符串才覆盖该段（空=不改）。**砍**：per-slot updatedAt、检索/embedding（deer-flow 本就全量注入、无检索）、多租户 per-user/per-agent、tiktoken 精确预算、trace、async 连接池规避、原子写、prefix-cache/ID-swap、上传洗涤、手动 CRUD。
 
+### 断点持久化 {#checkpointer}（第二季 · S7）
+
+核心 aha：**checkpoint = State 的全量快照按轮落盘——「保存现场」从内存升级到磁盘，进程可死、任务不死**。真 checkpointer 语义是 **per-step durability**（每轮都存，崩溃只丢半轮），不是 save-on-close。这里兑现两笔旧账：S5 的「保存现场 = state 在内存」简化（F08 out_of_scope 明写不做断点序列化）+ notes/06 拓展练习 2。
+
+**落点（2026-07-10 拍板 · M1=缝①+外壳、M2=悬空兜底保留）**：
+- **M1 挂载点 = 缝① `Checkpointer` middleware（per-turn 存）+ 外壳 `run_with_checkpoint` 收口终存**。middleware 在 `before_model` 每轮落盘（此刻上一轮 tool_result 已 append，快照完整）；外壳收口再终存一次（自然收口后没有下一轮 before_model，最终回复只能靠终存）。**注册序语义**：外壳把 Checkpointer 放 middleware 列表头——快照是本轮其它 middleware（Todo 重注/摘要压缩）**改写前**的轮间态；无害（改写幂等，恢复后重跑即得），但语义要说明。备选「纯外壳收口存」被否决——丢掉 per-step durability，那是 save-on-close 不是 checkpointer。**与 S6 成对照教学点：挂载点由操作节奏决定——per-run 的事走外壳（S6 memory），per-turn 的事走缝①（S7 checkpoint）**；这也是缝①第一次收「持久化」类住户，协议签名零改动（C7）、run() 零改动（C4）。
+- **恢复路径**：`load_state(path)` 重建 State →（HITL 场景）补答案 tool_result + 清 interrupt → 重进 `run()`——**与 S5 恢复流程同构**，checkpointer 只是把「State 在内存」换成「可落盘回装」。
+- **M2 悬空 tool_use 兜底（保留，~15 行）**：恢复的 State 若末条 assistant 带 tool_use 而无配对 tool_result，下轮请求直接 API 400。`load_state` 检查并补合成 `[interrupted]` tool_result（仅 interrupt 为空时——interrupt 非空是 HITL 待答悬空，答案归调用方补）。这是 deer-flow 用 205 行 DanglingToolCallMiddleware 换来的教训，也是 S2 摘要配对坑的姐妹篇（同一条 API 硬约束的两个引爆点）。**触发面说实（对抗审查 2026-07-10）**：本 checkpointer 自产档不会产生「interrupt 空的悬空」——before_model 快照永远轮间完整、终存悬空必伴 interrupt 非空；该兜底实际是防**外源/手造档**与**第三方 middleware 返回 Interrupt 却不 stash state.interrupt** 的防御层。
+
+**deer-flow 对照（子 agent 核实 2026-07-10）**：它在这个切片上是 **0% 内核 + 100% 胶水**——存/取/恢复全在 LangGraph 官方 saver 库里（InMemory/Sqlite/PostgresSaver），自己的 ~458 行全是工厂/单例/配置胶水；保存节奏是 LangGraph 每 super-step 自动存。**生产代码没用 `interrupt()`/`Command(resume)`**——clarification 走「正常收口 + 同 thread 新消息续跑」，与本项目 S5 设计同构。教学版手写的正是库包办的三件事：存什么（State 全量 JSON）、何时存（每轮）、怎么恢复（载入+补消息+重进）。
+
+**数据模型**：单文件 latest-only JSON（调用方给 path，即最简 thread key）；State 五字段全 JSON 友好，`Interrupt` ⇄ `{"question": ...} | null`。**砍**：checkpoint_id 谱系/time-travel/回滚、多后端工厂与单例锁、pending_writes、多租户/TTL/迁移、并发写锁、`Command(resume)` 兼容层、原子写。
+
 ## 关键约束
 
 | # | 约束 | 检验方式 |

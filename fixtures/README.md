@@ -24,4 +24,5 @@ verify 引用的 fixture 都在此。**fixture 先于代码**：feature 的 veri
 | `fake_llm/goal_cap.json` | ✅ | F07：次数熔断（不同文本始终 NO，靠 max_continuations 兜底） |
 | `fake_llm/goal_with_delegation.json` | ✅ | F07 审查 Y5：真 TaskTool 穿过续跑各委派一次，端到端证 _delegated 每轮复位（拆 D5） |
 | `fake_llm/clarification_flow.json` | ✅ | F08：ask_clarification 中断→state.interrupt 带出→补答案重进收口 |
+| `fake_llm/checkpoint_crash.json` | ✅ | F10：中途崩溃场景——第 2 轮 complete 弹尽抛错 = kill -9 离线等价物（接缝确定性行为替代真实环境事件）；natural_close 复用做恢复续跑/终存场景 |
 | `workspace/data.md` | ✅ | F02：read_file/bash 真实执行语料 |

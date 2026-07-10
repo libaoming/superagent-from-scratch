@@ -1,0 +1,6 @@
+{
+  "description": "F10 中途崩溃场景：第 1 轮正常工具往返，第 2 轮 complete 时弹尽抛 RuntimeError = kill -9 的离线等价物（接缝的确定性行为替代真实环境事件）。断言磁盘 checkpoint 停在第 2 轮 before_model 时刻：第 1 轮完整往返（含 tool_result）、turn_count==1、无第 2 轮任何东西",
+  "responses": [
+    {"content": [{"type": "tool_use", "id": "t1", "name": "echo", "input": {"text": "step-one"}}]}
+  ]
+}

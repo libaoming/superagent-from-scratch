@@ -3,16 +3,13 @@
 > 每次 session 第一个读的文件。收尾必更新本文件。
 
 ## 一句话状态
-2026-07-10 **S6 长期记忆收口完成（9/9 passing, tag sfs-s6）——第二季第 1 刀全闭环**。src/memory.py（写路径旁路=入队去抖后台 merge / loop 外外壳 run_with_memory，run() 零改动 C4 第七次实证 / updater 增量 merge「LLM 提议、代码定夺」/ 读注入 user 角色权限隔离 M2 / 6 段摘要 + facts）。收口五件全清：notes/07 拆解笔记 ✅、CONTEXT.md 回填（第五栈 + `<memory>` 暗物质 + 沉淀手段）✅、对抗审查 CLEAR（3 建议落地：SPEC:147 口径对齐 / updater 渲染抽 text 块 / 补 3 边界断言）✅、收口面试五考点全过（teach 记录 0013/0015，MISSION 已更新为全栈）✅、F09 passing + tag ✅。verify：test_s6_memory **7 passed**，全量 **69 passed**，src **880 行**（预算 1500）。eval 切片仍搁置（考点+lesson 0007 留档）。仓库：https://github.com/libaoming/superagent-from-scratch。
+2026-07-10 **S7 断点持久化收口完成（10/10 passing, tag sfs-s7）——第二季第 2 刀全闭环，一天两刀（S6+S7）**。src/checkpoint.py（84 行：per-step durability=缝① Checkpointer 在 before_model 每轮存 + 外壳 run_with_checkpoint 收口终存，两件套缺一不可 / load_state 悬空双语义兜底：崩溃悬空补 [interrupted]、待答悬空留调用方，`state.interrupt is None` 单闸 / 恢复与 S5 三步同构）。「节奏定挂载」与 S6 成对：per-run→外壳、per-turn→缝①（缝①第一次收持久化住户，C7/C4 零改动第八次实证）。deer-flow 对照史上最极端：0% 内核+100% 胶水。**教学环反哺开发第一例**：测试套件由理论课上用户先设计（teach/0016）、开发照单实现。收口全清：notes/08 ✅、CONTEXT 回填（[interrupted] 暗物质行，无新调用栈）✅、对抗审查 CLEAR（3 建议落地，含「悬空兜底对自产档不可达」的触发面说实）✅、收口面试 13 问三轮全过（teach/0017）✅。verify：**5 passed** / 全量 **74 passed**，src **968 行**（预算 1500）。eval 切片仍搁置。仓库：https://github.com/libaoming/superagent-from-scratch。
 
 ## 下次入口
-1. 读本文件 → `M1/PROGRESS.md`（「增量流水待整理」块累积多日，需合并进正式 Session Log 后清空——上次收口未做）
-2. **当前应做：第二季下一刀选型**（三候选，先跟用户拍板再提炼考点开课）：
-   - C2 checkpointer（断点持久化，接 notes/06 拓展练习 2）
-   - C3 deferred tools（工具延迟加载）
-   - eval 切片复活（考点 + lesson 0007 已留档，接 _goal_met 的 eval 闭环）
-3. 之后可选：M1 增量流水整理；exam-points「暗物质缺口」措辞对齐；橙研所成品文（7 笔记 + 7 面试记录是底稿）
-4. 教学侧下切片注意（记录 0015）：面试加「只问证据/只问备选」单点题练审题——用户新暴露模式是「答偏子问题」
+1. 读本文件 → `M1/PROGRESS.md`
+2. **当前应做：第二季第 3 刀选型**（先跟用户拍板再提炼考点开课）：C3 deferred tools（工具延迟加载）/ eval 切片复活（考点+lesson 0007 留档，接 _goal_met eval 闭环）/ 或收摊出橙研所成品文（8 笔记 + 8 面试记录是底稿，教学环反哺开发是新亮点）
+3. 教学侧下切片注意（0017）：面试改「一次只发一问」串行模式试一轮——区分「多问漏答」是审题习惯还是工作记忆容量
+4. 杂项可选：exam-points「暗物质缺口」措辞对齐
 
 ## 关键技术事实
 - 技术栈：Python 3.12 + uv + pytest；**零框架依赖**（不用 LangChain/LangGraph，loop 自己写，直接调 LLM API）

@@ -32,6 +32,8 @@
 - ~~**D4（教学环流程）**~~ ✅ 2026-07-07 已确认：落地「切片教学环」时两处按 Claude 推荐拍板——①面试问题环节与规矩 6 收口 quiz **合并升级**（不并存两个 quiz）②过关标准从「满分」改「**面试官 rubric**（命中要点即过）」。用户批准含此两点的 plan + 补充指示「用一场面试准备的思路来讲解和检查」，视为确认。
 
 ## Session Log（倒序）
+### 2026-07-10（续：S7 全切片一日闭环）
+- **S7 断点持久化开工→收口 → F10 passing + tag sfs-s7（第二季第 2 刀）**：开工序列（deer-flow 实况子 agent 调研：0% 内核+100% 胶水 458 行、生产没用 interrupt()/Command(resume)→ 拍板 M1=缝① per-turn+外壳终存 / M2=悬空兜底保留 → SPEC #checkpointer + F10 + 考点清单）→ 理论课 0009（quiz 8/8；**教学环反哺开发第一例**：用户课上先设计出测试套件，记录 0016）→ C5 开发（fixture checkpoint_crash.json → 测试红 → src/checkpoint.py 84 行绿，5+74 passed，C4 第八次实证）→ 收口（notes/08 + CONTEXT [interrupted] 暗物质行 + 对抗审查 CLEAR 3 建议落地含「悬空兜底对自产档不可达」触发面说实 + 收口面试 13 问三轮全过含一次跳关被闸门拦回，记录 0017）。实现层精化：悬空分崩溃/待答两种语义（`state.interrupt is None` 单闸），防撞坏 S5 恢复。
 ### 2026-07-10
 - **S6 收口完成 → F09 passing + tag sfs-s6（第二季第 1 刀全闭环）**：理论课 0008 完课（quiz 8/8，白板写路径「入队快照」满分，记录 0013）→ notes/07 拆解笔记 → CONTEXT.md 回填（第五栈 memory updater + `<memory>` 暗物质行 + 「沉淀」治理手段行）→ 对抗审查（fresh 子 agent）**CLEAR 无 FAIL**，3 建议落地：SPEC:147 updater 协议口径对齐 6 段 / update_memory 渲染抽 text 块（防 block list 的 Python repr 喂 updater）/ 补 3 边界断言（confidence=0.7 恰好进、空记忆不注入、casefold 去重）→ 收口面试五考点全过（Q3 一次过，Q1/Q2/Q4/Q5 补答收口；新暴露模式「答偏子问题」，记录 0015）→ verify：test_s6_memory 7 passed / 全量 69 passed / src 880 行 → commit 193e963 + tag sfs-s6 + push（`git ls-remote` 核实远端）。teach/MISSION.md 经用户确认正式更新为「全栈脱稿」（记录 0014）。
 ### 2026-07-09（下半日补记：S5 收口→CE 加课→第二季开季，当日未及入正式流水）
@@ -76,3 +78,12 @@
 <!-- Stop hook 自动追加区。2026-07-10 已整理 84 条（2026-07-08 14:10 → 2026-07-10 14:22）：07-08 下午批次（S2 面试两场/S3 考点+理论课/F05 开工审查/S3 面试/S4 考点+理论课/F06 开工）已被既有 07-08/07-09 Session Log 覆盖，教学细节在 learning-records/0004-0008；07-09 批次（S4 收口面试/进 S5/S5 全程/CE 加课/eval 理论课/S6 build）归并为新增「2026-07-09（下半日补记）」三条；07-10 批次（S6 收口/面试答题）归并为「2026-07-10」一条，面试细节在 learning-records/0015；噪声丢弃（图片占位、代码片段回显、harness 系统提示、答题原文碎片）。 -->
 
 - [2026-07-10 14:27] - M1/PROGRESS.md 增量流水块累积多日合并
+- [2026-07-10 14:31] commit
+- [2026-07-10 14:34] C2 checkpointer
+- [2026-07-10 14:49] 教学版预估 50-80 行可完成整个切片内核。</result>
+- [2026-07-10 16:47] 开工 F10
+- [2026-07-10 16:55] S7 收口
+- [2026-07-10 17:02] 无阻塞级代码缺陷。随手应修（非阻塞）：① features.json F10 `verify.fixture` 改为 `fixtures/fake_llm/checkpoint_crash.json`
+- [2026-07-10 17:29]  5. 落进产品的sla 质量保证. 恢复语义是产品定义不是工程细节, 哪些场景可以丢半轮 哪些场景不能丢半轮, 恢复后的重放副作用 哪些操作需要人工确认(无幂等)
+- [2026-07-10 17:31]     ① deer-flow 实况：0% 内核 + 100% 胶水——存/取/恢复内核 0 行自研，全在 LangGraph 官方 saver 库里（InMemory/Sqlite/Postgres
+- [2026-07-10 17:33] S7 收口
