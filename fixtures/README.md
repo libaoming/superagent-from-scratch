@@ -25,4 +25,6 @@ verify 引用的 fixture 都在此。**fixture 先于代码**：feature 的 veri
 | `fake_llm/goal_with_delegation.json` | ✅ | F07 审查 Y5：真 TaskTool 穿过续跑各委派一次，端到端证 _delegated 每轮复位（拆 D5） |
 | `fake_llm/clarification_flow.json` | ✅ | F08：ask_clarification 中断→state.interrupt 带出→补答案重进收口 |
 | `fake_llm/checkpoint_crash.json` | ✅ | F10：中途崩溃场景——第 2 轮 complete 弹尽抛错 = kill -9 离线等价物（接缝确定性行为替代真实环境事件）；natural_close 复用做恢复续跑/终存场景 |
+| `fake_llm/deferred_tools_flow.json` | ✅ | F11 主流程：tool_search select: 精确取→双通道晋升→下轮调 deferred 工具→收口（SpyLLM 在接缝断言第 1 轮不含/第 2 轮含 send_email schema） |
+| `fake_llm/deferred_guard_block.json` | ✅ | F11 拦截+自救：直调未晋升工具被缝① guard 拦（不真执行）→改调 tool_search 关键词搜（兼测 description 匹配）→晋升重试成功 |
 | `workspace/data.md` | ✅ | F02：read_file/bash 真实执行语料 |

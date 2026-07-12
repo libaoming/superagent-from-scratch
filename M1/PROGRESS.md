@@ -2,9 +2,9 @@
 
 | 字段 | 值 |
 |---|---|
-| active_feature | S8 deferred tools 开工序列（10/10 passing，S7 已收口 tag sfs-s7） |
-| slice | S8 开工中 |
-| 更新 | 2026-07-10 |
+| active_feature | （无——S8 收口完成，11/11 passing；下一件按 Next Candidates 拍板） |
+| slice | S8 完成（tag sfs-s8） |
+| 更新 | 2026-07-12 |
 
 ## Next Candidates
 - **进行中：S8 deferred tools（2026-07-10 用户拍板）**——调研→拍板→SPEC #deferred-tools→F11→考点→理论课→C5 开发→收口
@@ -33,6 +33,14 @@
 - ~~**D4（教学环流程）**~~ ✅ 2026-07-07 已确认：落地「切片教学环」时两处按 Claude 推荐拍板——①面试问题环节与规矩 6 收口 quiz **合并升级**（不并存两个 quiz）②过关标准从「满分」改「**面试官 rubric**（命中要点即过）」。用户批准含此两点的 plan + 补充指示「用一场面试准备的思路来讲解和检查」，视为确认。
 
 ## Session Log（倒序）
+### 2026-07-12
+- **S8 收口面试通过 → F11 passing + tag sfs-s8（第二季第 3 刀全闭环）**：增量流水 15 条归并清空（全部已被既有条目覆盖）→ 收口面试（串行+漏答不判过+动笔前复述三件套）五考点+突袭全过：Q1 追问补「知识层 vs 能力层」点睛句 + 纠偏「skills 正文注入=激活时非启动时」；Q2 三轮收口（③否决备选同题连漏两轮——多问漏答新形态）；Q3/Q4/Q5/突袭连续满分级，Q5 PM 三条（质量基线/分层旋钮带反馈回路/平台范式）绕开「问产品答机制」坑为全场最佳，突袭砍法双面论证引「不可能的分支不兜错」。**短板对策三连败确认**（明示 N 问→串行→复述均失效，8 答仅 1 复述），但 Q4 起用户自发「逐问小标题作答」后三题零漏答——新假设：有效的是输出格式不是前置动作，下场面试改验证「逐问小标题」。记录 0019。→ verify 真跑：test_s8_deferred **6 passed** / 全量 **80 passed** → F11 改 passing（verify_notes 回填）→ commit + tag sfs-s8 + push。**11/11 passing，第二季三刀（S6 记忆/S7 断点/S8 deferred tools)全部收口**。
+### 2026-07-11
+- **S8 收口推进（notes/09 + CONTEXT 回填 + 对抗审查 0 红 4 黄全清）**：① notes/09 拆解笔记（七节全 + 实现陷阱三则；Artifact 留档 https://claude.ai/code/artifact/1be7d0bd-8998-4bba-8e81-9ec65d94a86f）② CONTEXT.md S8 回填（主栈第 2 层 tools 首次动态化 / guard 合成 error 暗物质与 [interrupted] 同族但教学式 / 按需注入·能力层手段行；五栈不变）③ 对抗审查（fresh 子 agent）**0 红 4 黄**——黄1 test_s8 fixture 路径 cwd 依赖偏离兄弟文件约定→改 `Path(__file__)` 式（修前 cd tests 单跑 3 failed，修后 6 passed 实证）；黄2 空 query 走关键词分支恒真匹配→静默群晋升 5 个并白破缓存→回提示教自救不扩权 + 钉断言；黄3 构造注入跨上下文语义（绑定父 state 的 tool_search 下放子 agent 会晋升写进父 state、子 agent 永远等不到放行；load_state 新 State 须重建）→选**文档化**不改 TaskTool（保 S3 代码不动），docstring + notes/09 陷阱①；黄4 select: 大小写敏感与 tool_search 自标 deferred 死锁入陷阱③ + test_s7 「五字段」过期注释改「六字段」。④ 复验全量 **80 passed**。剩：收口面试（串行+漏答不判过+动笔前复述题目）→ tag sfs-s8。
+- **0010 理论课完课（教学环第 3 步）**：复测 3/3、quiz 8/8（连续第二课满分）、吸收检查串行补答全过；分层旋钮方案为十课最佳 PM 输出；「多问漏答」四次现形且串行模式拦不住（确诊审题习惯），新确诊「问产品答机制」；收口面试对策升级三件套（串行+漏答不判过+动笔前复述题目）。记录 0018。用户新教学偏好入 NOTES：每课至少一道场景化产品题。
+- **F11_deferred_tools 代码侧完成 → in_progress**：C5 顺序——fixture 先造（deferred_tools_flow 主流程 + deferred_guard_block 拦截自救兼测关键词搜）→ test_s8_deferred.py 先红（ModuleNotFoundError）→ 实现绿：src/deferred.py（deferred_system_block 露纯名字 / ToolSearchTool 搜+双通道晋升，catalog+state 构造注入 / DeferredGuard 缝①拦未晋升回教学式 error）+ loop.py（State.promoted 新字段、schema 构建移进循环体按 promoted 过滤——**「run() 零改动」8 连胜光明正大终止，C4 签名仍冻结**）+ checkpoint.py（save/load 字段表同步 promoted，sorted list ⇄ set，S7 联动账结清）→ **6 passed；全量 80 passed（存量 74 零改动同绿 = C4 第九次实证），src 1064 行**。测试观察「每轮提交哪些 schema」走唯一接缝（SpyLLM 包装 FakeLLM），不 patch loop 内部。无新 Deviations。剩：notes/09 → 对抗审查 → 收口面试 → tag sfs-s8。
+### 2026-07-10（晚：S8 deferred tools 开工三件套）
+- **S8 开工序列前半完成 → commit e3ddf25**：C3 deferred tools 调研（deer-flow 实况：tool_search 四件 397 行、内核 ~250——只 defer MCP 工具、露纯名字清单、缝③元工具、双通道晋升、wrap_tool_call 拦截）→ 拍板 M1=loop 内每轮过滤（run() 零改动、C4 冻结）/ M2=双通道晋升 → SPEC #deferred-tools + features.json F11 + 考点清单 s8-deferred-tools-exam-points.html 落盘。该砍清单定案：catalog_hash 防漂移 / fail-closed RuntimeError / pydantic 配置模块 / regex 降级容错。跨切片账：state.promoted 新字段 ⇒ S7 save_state 字段表同步 + roundtrip 断言。剩：0010 理论课（已发布未上）→ C5 开发 → 收口。
 ### 2026-07-10（续：S7 全切片一日闭环）
 - **S7 断点持久化开工→收口 → F10 passing + tag sfs-s7（第二季第 2 刀）**：开工序列（deer-flow 实况子 agent 调研：0% 内核+100% 胶水 458 行、生产没用 interrupt()/Command(resume)→ 拍板 M1=缝① per-turn+外壳终存 / M2=悬空兜底保留 → SPEC #checkpointer + F10 + 考点清单）→ 理论课 0009（quiz 8/8；**教学环反哺开发第一例**：用户课上先设计出测试套件，记录 0016）→ C5 开发（fixture checkpoint_crash.json → 测试红 → src/checkpoint.py 84 行绿，5+74 passed，C4 第八次实证）→ 收口（notes/08 + CONTEXT [interrupted] 暗物质行 + 对抗审查 CLEAR 3 建议落地含「悬空兜底对自产档不可达」触发面说实 + 收口面试 13 问三轮全过含一次跳关被闸门拦回，记录 0017）。实现层精化：悬空分崩溃/待答两种语义（`state.interrupt is None` 单闸），防撞坏 S5 恢复。
 ### 2026-07-10
@@ -76,19 +84,14 @@
 - 如果要核查线上/读大文件 → 派 `.claude/agents/superagent-from-scratch-ops.md` 子 agent，别在主 context 拉原始输出
 
 ## 🤖 增量流水（待整理）
-<!-- Stop hook 自动追加区。2026-07-10 已整理 84 条（2026-07-08 14:10 → 2026-07-10 14:22）：07-08 下午批次（S2 面试两场/S3 考点+理论课/F05 开工审查/S3 面试/S4 考点+理论课/F06 开工）已被既有 07-08/07-09 Session Log 覆盖，教学细节在 learning-records/0004-0008；07-09 批次（S4 收口面试/进 S5/S5 全程/CE 加课/eval 理论课/S6 build）归并为新增「2026-07-09（下半日补记）」三条；07-10 批次（S6 收口/面试答题）归并为「2026-07-10」一条，面试细节在 learning-records/0015；噪声丢弃（图片占位、代码片段回显、harness 系统提示、答题原文碎片）。 -->
-
-- [2026-07-10 14:27] - M1/PROGRESS.md 增量流水块累积多日合并
-- [2026-07-10 14:31] commit
-- [2026-07-10 14:34] C2 checkpointer
-- [2026-07-10 14:49] 教学版预估 50-80 行可完成整个切片内核。</result>
-- [2026-07-10 16:47] 开工 F10
-- [2026-07-10 16:55] S7 收口
-- [2026-07-10 17:02] 无阻塞级代码缺陷。随手应修（非阻塞）：① features.json F10 `verify.fixture` 改为 `fixtures/fake_llm/checkpoint_crash.json`
-- [2026-07-10 17:29]  5. 落进产品的sla 质量保证. 恢复语义是产品定义不是工程细节, 哪些场景可以丢半轮 哪些场景不能丢半轮, 恢复后的重放副作用 哪些操作需要人工确认(无幂等)
-- [2026-07-10 17:31]     ① deer-flow 实况：0% 内核 + 100% 胶水——存/取/恢复内核 0 行自研，全在 LangGraph 官方 saver 库里（InMemory/Sqlite/Postgres
-- [2026-07-10 17:33] S7 收口
-- [2026-07-10 17:36]     checkpoint 内核已被框架商品化（deer-flow 0% 自研、458 行全是胶水）——PM 该「内核用库、差异化投胶水」（多租户/回滚/审计/恢复语义），不为「自研持久化」立项；但
-- [2026-07-10 17:39] C3 deferred tools
-- [2026-07-10 17:51] **该砍**：catalog_hash 防漂移（教学版目录构建后不变，无持久化跨会话晋升）、fail-closed RuntimeError、pydantic 配置模块、regex 降级容错（保留也就
-- [2026-07-10 20:01] 总结 准备下班
+<!-- Stop hook 自动追加区。2026-07-12 已整理 15 条（2026-07-11 09:16 → 2026-07-12 09:56）：0010 理论课批次（09:16-12:32，白板/quiz 答题碎片）已被既有「2026-07-11 · 0010 理论课完课」覆盖；F11 开工与 notes/09 批次（14:06-14:26）已被「F11 代码侧完成」「S8 收口推进」两条覆盖；07-12 09:56 为本 session 启动请求，无新信息，全部丢弃。 -->
+- [2026-07-12 10:04] 先归并增量流水，然后开 S8 收口面试
+- [2026-07-12 10:16] 藏 在loops 内 藏未晋升tools 的 schema，在 wrap_tool_calls 做 guard（未promoted tools 过滤）
+- [2026-07-12 10:21] 题目在问：两者按需注入的内容本质是什么，一问。skills 注入知识、deferred tools 注入能力
+- [2026-07-12 10:24]    tools 修改的是tools 的参数 未改变结构
+- [2026-07-12 11:51]     一句话收口：「零改动是荣誉不是约束——约束是签名冻结。S4-S7 的 8 连胜是因为那几刀的治理对象恰好都在 loop 外；S8 的治理对象在 loop 内，光明正大终止连胜，C4 依然完好。
+- [2026-07-12 11:54]  备选 1：外壳重进——借 S5 的中断语义，每次 tool_search 晋升就让 run() 收口退出，外壳更新工具集后重新进入 loop。为什么否：每次晋升都要多付一轮「收口 → 重进」的往返，
+- [2026-07-12 11:56]  一句话收口：「当轮可读、下轮可调——缺①白等一轮，缺②永远调不了。」
+- [2026-07-12 11:56]   **③ 这刀还牵动了一笔跨切片的账——是哪笔？不结会出什么事？」
+- [2026-07-12 12:03]       字段表同步结清。
+- [2026-07-12 12:09]       一句话对齐老板：「deferred tools 不是省 token 的优化，是让『接入规模』和『选择质量』解耦的产品架构——没有它，生态每大一分，产品准一分都难。」

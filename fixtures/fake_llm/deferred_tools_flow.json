@@ -1,0 +1,8 @@
+{
+  "description": "S8 主流程：搜（tool_search select: 精确取）→ 双通道晋升（当轮 tool_result 给 schema JSON + state.promoted 记名）→ 下轮调用已晋升的 deferred 工具 → 自然收口。第 1 轮提交的 tools 不含 send_email（藏），第 2 轮起包含（晋升放行）。",
+  "responses": [
+    {"content": [{"type": "tool_use", "id": "s1", "name": "tool_search", "input": {"query": "select:send_email"}}]},
+    {"content": [{"type": "tool_use", "id": "s2", "name": "send_email", "input": {"to": "bob@example.com", "subject": "hi"}}]},
+    {"content": [{"type": "text", "text": "邮件已发送给 bob。"}]}
+  ]
+}

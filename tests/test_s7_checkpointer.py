@@ -109,7 +109,7 @@ def test_load_state_patches_dangling_tool_use(tmp_path):
     assert st2.messages[-1]["role"] == "assistant"  # 未被兜底篡改，悬空留给调用方补答案
 
 
-# ---------- save/load 往返：State 五字段全量保真 ----------
+# ---------- save/load 往返：State 字段全量保真（S8 起六字段；promoted 的 roundtrip 由 test_s8 钉） ----------
 
 
 def test_save_load_roundtrip_preserves_all_fields(tmp_path):

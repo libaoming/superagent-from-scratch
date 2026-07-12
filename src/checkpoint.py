@@ -19,13 +19,17 @@ from src.middleware import Interrupt, Middleware
 
 
 def save_state(path, state: State) -> None:
-    """State 五字段全量 JSON 落盘（单文件 latest-only，教学版砍 checkpoint_id 谱系/原子写）。"""
+    """State 六字段全量 JSON 落盘（单文件 latest-only，教学版砍 checkpoint_id 谱系/原子写）。
+
+    字段表与 State 手工同步（S8 教训：加 promoted 时若漏这里，恢复后晋升丢失、已读 schema 的工具重新隐身）。
+    """
     data = {
         "messages": state.messages,
         "turn_count": state.turn_count,
         "todos": state.todos,
         "goal": state.goal,
         "interrupt": {"question": state.interrupt.question} if state.interrupt else None,
+        "promoted": sorted(state.promoted),  # set 不可 JSON 化：存 sorted list（diff 稳定），载回 set
     }
     Path(path).write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
 
@@ -47,6 +51,7 @@ def load_state(path) -> State:
         interrupt=Interrupt(itr["question"]) if itr else None,
         todos=data.get("todos", []),
         goal=data.get("goal", ""),
+        promoted=set(data.get("promoted", [])),  # 老档缺字段 = 空集，向后兼容
     )
     if state.interrupt is None and state.messages:
         last = state.messages[-1]

@@ -22,6 +22,7 @@ class State:
     interrupt: "Interrupt | None" = None  # F08 中断返回通道：Clarification.after_model stash 进来，调用方读它拿问题
     todos: list = field(default_factory=list)  # F07 计划外置：write_todos 全量替换、TodoMiddleware 每轮注入（摘要压不掉）
     goal: str = ""  # F07 续跑目标：非空则 run_with_goal 在收口后判定达成、未达成注入续跑消息重进 loop
+    promoted: set = field(default_factory=set)  # F11 已晋升的 deferred 工具名：loop 每轮按此过滤 schema 提交（S7 save_state 字段表同步）
 
 
 def _compose_tool_call(middlewares) -> callable:
@@ -45,17 +46,20 @@ def run(
     system: str = "",
     max_turns: int = 40,
 ) -> State:
-    tool_map = {t.name: t for t in tools}
-    tool_schemas = [
-        {"name": t.name, "description": t.description, "input_schema": t.input_schema}
-        for t in tools
-    ]
+    tool_map = {t.name: t for t in tools}  # 执行层持全部：deferred 藏的是给 LLM 的视图，不是工具本身
     call_tool = _compose_tool_call(middlewares)
 
     while True:
         for mw in middlewares:
             mw.before_model(state)  # 注册序
 
+        # F11：schema 构建移进循环体，按 promoted 过滤——治理对象是「每轮的 tools 提交点」，
+        # 而提交点只在这里（三钩子只收 state 碰不到 tools；C4 冻结的是签名，内部实现不在范围）
+        tool_schemas = [
+            {"name": t.name, "description": t.description, "input_schema": t.input_schema}
+            for t in tools
+            if not getattr(t, "deferred", False) or t.name in state.promoted
+        ]
         resp = llm.complete(system=system, messages=state.messages, tools=tool_schemas)
         state.messages.append(resp)
 

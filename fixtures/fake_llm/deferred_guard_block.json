@@ -1,0 +1,9 @@
+{
+  "description": "S8 拦截+自救场景：模型（录制/幻觉）直调未晋升的 deferred 工具 → 缝① DeferredGuard 拦截回教学式 error（不真执行——执行层 tool_map 持全部工具，不拦会静默成功）→ 模型自救改调 tool_search（关键词匹配 description）→ 晋升后重试成功 → 收口。",
+  "responses": [
+    {"content": [{"type": "tool_use", "id": "g1", "name": "send_email", "input": {"to": "bob@example.com", "subject": "hi"}}]},
+    {"content": [{"type": "tool_use", "id": "g2", "name": "tool_search", "input": {"query": "邮件"}}]},
+    {"content": [{"type": "tool_use", "id": "g3", "name": "send_email", "input": {"to": "bob@example.com", "subject": "hi"}}]},
+    {"content": [{"type": "text", "text": "补救完成：邮件已发出。"}]}
+  ]
+}
