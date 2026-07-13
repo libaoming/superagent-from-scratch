@@ -1,0 +1,9 @@
+{
+  "description": "F13 自救成功：同 query 两轮触发警告（warn=2/hard=3），模型「看到」[loop warning] 后换 query（新 hash 计数归 1），随后自然收口——警告档教自救、不硬停。4 条录制应恰好耗尽",
+  "responses": [
+    {"content": [{"type": "tool_use", "id": "r1", "name": "search", "input": {"query": "旧思路"}}]},
+    {"content": [{"type": "tool_use", "id": "r2", "name": "search", "input": {"query": "旧思路"}}]},
+    {"content": [{"type": "tool_use", "id": "r3", "name": "search", "input": {"query": "换个角度"}}]},
+    {"content": [{"type": "text", "text": "换角度查到了，结论：X。"}]}
+  ]
+}

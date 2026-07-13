@@ -1,0 +1,5 @@
+{
+  "goal": "备份数据库并校验完整性",
+  "transcript": "备份完成，md5 校验一致。",
+  "expected": true
+}

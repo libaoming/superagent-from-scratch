@@ -2,14 +2,14 @@
 
 | 字段 | 值 |
 |---|---|
-| active_feature | （无——S8 收口完成，11/11 passing；下一件按 Next Candidates 拍板） |
-| slice | S8 完成（tag sfs-s8） |
-| 更新 | 2026-07-12 |
+| active_feature | **S10 全闭环（F13 passing + tag sfs-s10，12/13 passing）**。下一步二选一：清 S9 挂账（F12 只差收口面试）或开 S11 ReadBeforeWrite 三件套 |
+| slice | S10 收口完成（第三季第 1 刀 ✅）｜ S9 收口暂停（挂账） |
+| 更新 | 2026-07-13 |
 
 ## Next Candidates
-- **进行中：S8 deferred tools（2026-07-10 用户拍板）**——调研→拍板→SPEC #deferred-tools→F11→考点→理论课→C5 开发→收口
-- 备选下刀：eval 切片复活（考点+lesson 0007 已留档）；橙研所成品文（8 笔记 + 8 面试记录是底稿，教学环反哺开发是新亮点）
-- 顺路可清「对抗审查遗留」便宜几条；exam-points「暗物质缺口」措辞对齐
+- **进行中：S10 LoopDetection + TokenBudget 加餐（2026-07-12 开季拍板 D1=A/D2=B/D3=A）**——三件套 ✅ → 理论课 0011（待上）→ C5 开发 → 收口。第三季全景：S11 ReadBeforeWrite → S12 执行安全三件套 → 季末整合理论课+总复习面试（设计稿 teach/reference/season3-plan.html）
+- **挂账：S9 收口面试**（F12 in_progress，恢复点=STEP 0 复测两问；改动未 commit，与 S10 文件面基本不相交）
+- 备选：橙研所成品文；「对抗审查遗留」的 bash stderr 一条留 S12 顺路清
 
 ## ~~S5 备忘~~（✅ 2026-07-09 两颗雷均在 S5 落地时拆除并钉测试，见 notes/06 决策 7）
 - ~~Interrupt.question 返回通道~~ ✅ S5 走 state.interrupt 字段带出（test_clarification_interrupts_before_tool_runs）
@@ -33,6 +33,15 @@
 - ~~**D4（教学环流程）**~~ ✅ 2026-07-07 已确认：落地「切片教学环」时两处按 Claude 推荐拍板——①面试问题环节与规矩 6 收口 quiz **合并升级**（不并存两个 quiz）②过关标准从「满分」改「**面试官 rubric**（命中要点即过）」。用户批准含此两点的 plan + 补充指示「用一场面试准备的思路来讲解和检查」，视为确认。
 
 ## Session Log（倒序）
+### 2026-07-13
+- **S10 收口面试通过 → F13 passing + tag sfs-s10（第三季第 1 刀全闭环，12/13 passing）**：面试（串行+漏答不判过+逐问小标题+「只问证据」现挂）五考点+突袭全过——Q1 三轮收口（「发现延迟乘在账单上」到根 / salient 归位 / 「归一化在回答什么算同一件事」全场最佳段落之一）；Q2 消息序列摆写满分 + quiz 错题池家谱清账（避/补/绕）；Q3 方言归位 +**「只问证据」第五验满分**（git diff 0 行 + 存量同绿 + 三断言「行为指纹」解读，0011 复测错→当晚现挂满分=条件反射一日闭环，宣布成型）；Q4 一次过零追问（两个自产论证超标准答案：「打转 run 被 Summarization 服务得很好却在成本轴无限烧钱」「Loop 抓检测得到的重复、Budget 兜检测不到的一切浪费」）；Q5 三轮收口（P1 划线权衡「回家」）；突袭警告蒸发机制链五步满分级（「共享实例=把主循环的信箱挂在 subagent 门口」）。**「多问漏答」5 次现形且小标题格式全场未被自发使用**——0019 假设修正（实际有效=面试官单发一问），下场对策=多问题附作答模板骨架；新确诊「万能权衡」模式（误报率vs止损速度错放两次第三次回家）。记录 0021。→ verify 真跑 **9 passed / 全量 95 passed** → F13 passing（verify_notes 回填）→ commit + tag sfs-s10。**12/13 passing，教学环反哺开发本切片三例。**
+- **S10 收口推进（notes/11 + CONTEXT 回填 + 对抗审查 0 红 6 黄全清）**：① notes/11 拆解笔记（七节全：deer-flow 902 行对照内核 ~150 → 177 行三文件 / 7 条决策清单含拍板 A 与「教学环反哺开发第三例」/ 未钉面说实 / 可迁移 5 条 + PM 4 条 / 拓展练习 2 道含「警告自救成功率 eval」接 S9 量表）② CONTEXT.md 回填（S10 无新调用点五栈不变；暗物质 +2 行——`[loop warning]` 延迟注入=教学式第三员、`[loop stop]` 剥 tool_use=**首个输出侧替换型「被代言」**；治理手段 +「止损」行）③ 对抗审查（fresh 子 agent）**0 红 6 黄**——黄1 实例状态跨 run 泄漏（甲任务警告注入乙对话，实跑复现）+ 黄2 与 subagent 共享实例警告被劫走（S8 黄3 姐妹题）→ **契约化 docstring**「一个实例=一个任务、不与 subagent 共享」（续跑共用=有意语义：前科不因续跑清零，同 D5 处理）；黄3 挂载次序缺位（双件同挂脏账 + 硬停剥掉 ask_clarification 丢 interrupt）→ docstring 次序原则「防御件注册在语义件之前」+ **补 2 个行为钉**（同挂先剥者赢/后跑者早退免疫、Interrupt 先行收口不被剥，新 fixture loop_hardstop_vs_clarification）+ CONTEXT「每件每轮至多一条」措辞校正；黄4 notes 未钉面清单补全（含「多余录制不被消费已被 turn_count==0 间接钉死」反向澄清）；黄5 checkpoint「改写幂等」注释被警告注入证伪 → 补非幂等例外；黄6 window≥1 断言（window=0 删空切片=无限窗语义反转）+ features.json 行数 165→177 据实改正（期间自犯「先写后测」一次，当场按核验纪律改正）。④ 修后复验 **test_s10 9 passed / 全量 95 passed / src 1330 行**。剩：收口面试（串行+漏答不判过+逐问小标题+「只问证据」第五验现挂）→ F13 passing + tag sfs-s10。
+- **F13_loop_detection 代码侧完成 → in_progress**：C5 顺序——fixture 先造（5 个：loop_repeat_calls 主流程「留/补」双断言 / loop_self_rescue 警告教自救 / loop_offset_bucket 宽进防逃检 / loop_write_full_args 严出防误报 / token_budget_overflow 警告线，预算硬停复用 endless_tool_calls）→ test_s10_loop_detection.py 先红（ImportError）→ 实现绿：src/middlewares/two_tier.py（共享基建 TwoTierGuard：双档阈值构造断言 warn<hard「排队警告永远等不到下一轮」+ 延迟注入（after_model 排队/before_model append，形态同 TodoMiddleware）+ 剥 tool_use（原地改 messages[-1].content，loop 走终止条件 1））+ loop_detection.py（归一化不对称：读类 salient 字段+offset 200 行分桶宽进 / 名字含 write/edit 等全参严出；排序→sha1→滑窗 20 计数，**滑窗=实例变量（拍板 A 落地，零 S7 联动）**）+ token_budget.py（字符数近似累加，每工具轮计整个 messages——近似「每轮全量重提交」成本结构）→ **7 passed；全量 93 passed（存量 86 零改动同绿 = C4 第十次实证），src 1316 行**（三文件 165 行，预算内）。配对完整性断言（assert_pairing_intact）钉住「注入不拆配对」。无新 Deviations。剩：notes/11 → CONTEXT 回填 → 对抗审查 → 收口面试 → tag sfs-s10。
+- **增量流水 36 条归并清空（全部已被既有条目覆盖）+ 0011 理论课发布并完课 → S10 拍板 A，进入 C5**：0011 课发布（`teach/lessons/0011-s10-loop-detection-off-script.html` + Artifact https://claude.ai/code/artifact/68f1ce72-3f77-4121-8869-440d74981896 ，沿用十课格式 + 新增「课上合议·开工拍板题」节）→ 完课：复测 2/3（**Q1「只问证据」回退**——连续第四课、0010 对本课错，教形状判别法「证据不以『因为』开头，长着『跑了什么看到什么』的形状」）、quiz 7/8（Q4 配对坑家谱错——干扰项「同切片真决策错约束」，判别法「配对坑资格=不这么做 API 就 400」+ 避/补/绕三动词口诀）、吸收检查 3/3（检查 2 自救窗口一次过 + 补「**warn<hard 是延迟注入的硬性推论**」——硬停当轮收口、排队警告永远等不到下一轮；检查 3 轮询误杀场景两问全中、对策命中被砍的 per-tool 覆写，收束「**豁免的安全网=TokenBudget**」正交防御产品理由）→ **拍板题（本课交付物）：案 A middleware 实例变量**——判据「丢了不影响 loop 任务的恢复」（灵敏度降级≠任务错误），替 B 公平陈述跨恢复存活，代价（恢复后计数归零、检测延迟翻倍）说实知情接受，**零 S7 联动、省季末预算**。「逐问小标题作答」题内首验有效（拍板 3 问齐答），「多问漏答」新形态=漏**题外前置项**两例。记录 0020。剩：C5 开发 → notes/11 → 对抗审查 → 收口面试（含「只问证据」第五验现挂形态）→ tag sfs-s10。
+### 2026-07-12（晚：第三季开季拍板 + S10 开工三件套）
+- **第三季设计→拍板→S10 三件套落盘**：deer-flow 实况子 agent 调研（28 件 middleware 8040 行全盘点 + LoopDetection 612/ReadBeforeWrite 265/sandbox 全家 ~4000 精读，全部 wc -l 实测）→ 设计稿 season3-plan.html（Artifact https://claude.ai/code/artifact/66410217-0fbb-4937-9d87-fba39b447df1 ）→ 用户拍板 **D1=A**（三刀照 TOP 3：S10 防打转/S11 写前版本门/S12 执行安全三件套）**D2=B**（TokenBudget +60 行进主干作 S10 加餐，季末余量 ~19 行的预算风险知情接受）**D3=A**（季末 0 行代码整合理论课+全项目总复习面试）**顺序=B**（直接开 S10，S9 面试挂账后补）→ S10 开工三件套：SPEC #loop-detection（M1=缝① after_model 检测+before_model 延迟注入——S2 配对坑第三现身；M2=剥 tool_use 硬停复用终止条件 1；加餐共享双档+延迟注入基建，字符数近似计费；滑窗计数放哪留理论课合议）+ features.json F13（verify=test_s10_loop_detection.py，fixture 待造）+ 考点清单 s10-loop-detection-exam-points.html（Artifact https://claude.ai/code/artifact/0e6b25d5-a513-4b1e-95bf-61e09c9b2d04 ）+ RESOURCES.md 喂 S10 知识源。**剩：/teach 0011 理论课（用户上完才动代码）→ C5 → 收口**。
+### 2026-07-12（续：S9 eval 闭环开工→代码侧+审查全清）
+- **S9 开工三件套 + C5 开发 + E2E + 对抗审查 0 红 3 黄全清（收口面试待走）**：用户拍板 M1=_goal_met+程序化 accuracy / M2=量分+记账+手动一次一改 / M3=prompt 抽模块常量（全 A）→ SPEC #eval-loop + features.json F12（考点清单/理论课 0007 复用 07-09 留档）→ C5 顺序：fixture 先造（train 10 / held_out 5 案例 `{goal, transcript, expected}` + eval_verdicts 对抗录制 04/08 藏 YESTERDAY 措辞 + goal_verdict_edges 解析边界两连发）→ test_s9_eval 先红（ModuleNotFoundError）→ src/evals.py 实现（load_cases 按文件名序 / run_eval 程序化 accuracy / append_result TSV 记账）→ **基线真跑 0.8**（04/08 假阳性把 S5 审查 Y1 量化实锤）→ 修一处（goal.py：GOAL_JUDGE_PROMPT 抽常量 +「\s*YES\b」整词判定；改前先 grep 存量 S5 录制措辞确认语义不变）→ **1.0**，红→绿即「量分驱动一次一改」实证 → 真实模型 E2E（scripts/e2e_s9_eval.py 复用 ClaudeCLILLM）**train 1.0 / held_out 1.0**，evals/results.tsv 四行账齐。notes/10 ✅ + CONTEXT 回填 ✅（栈② system 抽常量、startswith 缺口清账、行号校准；无新调用点/暗物质）。对抗审查（fresh 子 agent）**0 红 3 黄**——黄1 SPEC M2「E2E 真跑基线」与实际（离线对抗录制跑基线）不符→SPEC 措辞据实改+写明为何是诚实选择；黄2 整词判定对「YES-oriented/YES AND NO」复合开头残余假阳性→notes/10 说实（不打解析补丁，根治=类型化 evaluator）+ held_out 未经受陷阱也说实；黄3 load_cases 空目录静默回空/expected 非布尔静默判错→装载时 raise 两道 + 钉 test_load_cases_refuses_silent_boundaries。修后复验 **test_s9 6 passed / 全量 86 passed / src 1146 行**。剩：收口面试（新规则「逐问小标题作答」首验）→ F12 passing + tag sfs-s9。
 ### 2026-07-12
 - **S8 收口面试通过 → F11 passing + tag sfs-s8（第二季第 3 刀全闭环）**：增量流水 15 条归并清空（全部已被既有条目覆盖）→ 收口面试（串行+漏答不判过+动笔前复述三件套）五考点+突袭全过：Q1 追问补「知识层 vs 能力层」点睛句 + 纠偏「skills 正文注入=激活时非启动时」；Q2 三轮收口（③否决备选同题连漏两轮——多问漏答新形态）；Q3/Q4/Q5/突袭连续满分级，Q5 PM 三条（质量基线/分层旋钮带反馈回路/平台范式）绕开「问产品答机制」坑为全场最佳，突袭砍法双面论证引「不可能的分支不兜错」。**短板对策三连败确认**（明示 N 问→串行→复述均失效，8 答仅 1 复述），但 Q4 起用户自发「逐问小标题作答」后三题零漏答——新假设：有效的是输出格式不是前置动作，下场面试改验证「逐问小标题」。记录 0019。→ verify 真跑：test_s8_deferred **6 passed** / 全量 **80 passed** → F11 改 passing（verify_notes 回填）→ commit + tag sfs-s8 + push。**11/11 passing，第二季三刀（S6 记忆/S7 断点/S8 deferred tools)全部收口**。
 ### 2026-07-11
@@ -84,14 +93,31 @@
 - 如果要核查线上/读大文件 → 派 `.claude/agents/superagent-from-scratch-ops.md` 子 agent，别在主 context 拉原始输出
 
 ## 🤖 增量流水（待整理）
-<!-- Stop hook 自动追加区。2026-07-12 已整理 15 条（2026-07-11 09:16 → 2026-07-12 09:56）：0010 理论课批次（09:16-12:32，白板/quiz 答题碎片）已被既有「2026-07-11 · 0010 理论课完课」覆盖；F11 开工与 notes/09 批次（14:06-14:26）已被「F11 代码侧完成」「S8 收口推进」两条覆盖；07-12 09:56 为本 session 启动请求，无新信息，全部丢弃。 -->
-- [2026-07-12 10:04] 先归并增量流水，然后开 S8 收口面试
-- [2026-07-12 10:16] 藏 在loops 内 藏未晋升tools 的 schema，在 wrap_tool_calls 做 guard（未promoted tools 过滤）
-- [2026-07-12 10:21] 题目在问：两者按需注入的内容本质是什么，一问。skills 注入知识、deferred tools 注入能力
-- [2026-07-12 10:24]    tools 修改的是tools 的参数 未改变结构
-- [2026-07-12 11:51]     一句话收口：「零改动是荣誉不是约束——约束是签名冻结。S4-S7 的 8 连胜是因为那几刀的治理对象恰好都在 loop 外；S8 的治理对象在 loop 内，光明正大终止连胜，C4 依然完好。
-- [2026-07-12 11:54]  备选 1：外壳重进——借 S5 的中断语义，每次 tool_search 晋升就让 run() 收口退出，外壳更新工具集后重新进入 loop。为什么否：每次晋升都要多付一轮「收口 → 重进」的往返，
-- [2026-07-12 11:56]  一句话收口：「当轮可读、下轮可调——缺①白等一轮，缺②永远调不了。」
-- [2026-07-12 11:56]   **③ 这刀还牵动了一笔跨切片的账——是哪笔？不结会出什么事？」
-- [2026-07-12 12:03]       字段表同步结清。
-- [2026-07-12 12:09]       一句话对齐老板：「deferred tools 不是省 token 的优化，是让『接入规模』和『选择质量』解耦的产品架构——没有它，生态每大一分，产品准一分都难。」
+<!-- Stop hook 自动追加区。2026-07-13 已整理 36 条（2026-07-12 10:04 → 2026-07-13 08:47）：S8 收口面试批次（10:04-12:19）已被「2026-07-12 · S8 收口面试通过 → tag sfs-s8」覆盖；S9 fixture 造案例与实跑批次（13:43-13:55，含重复指令 15 条）已被「2026-07-12（续）· S9 开工三件套 + C5 开发」覆盖；第三季设计批次（14:16-14:44）已被「2026-07-12（晚）· 第三季开季拍板 + S10 开工三件套」覆盖；07-13 08:47 为本 session 启动请求，无新信息，全部丢弃。 -->
+- [2026-07-13 09:15] - Spend your boldness in one place; keep everything around it quiet. If the accent fights the ground
+- [2026-07-13 15:00] 上完了
+- [2026-07-13 15:04] 3. B 方案跨恢复存活——恢复后接着上次的计数继续,不必重新打转计数
+- [2026-07-13 15:06] [Image: source: /Users/baomingli/.claude/image-cache/631ea0e5-f177-4d22-b0e9-8e32db676dcf/1.png] [Im
+- [2026-07-13 15:07] [Image: source: /Users/baomingli/.claude/image-cache/631ea0e5-f177-4d22-b0e9-8e32db676dcf/3.png]
+- [2026-07-13 15:07] [Image: source: /Users/baomingli/.claude/image-cache/631ea0e5-f177-4d22-b0e9-8e32db676dcf/4.png]
+- [2026-07-13 15:11] 丢了滑窗计数, 不影响loop任务的恢复. 是agent的防御监测计数
+- [2026-07-13 15:15] 间隔2, 是提醒大模型 给模型自救的轮次和空间. 如果调成0, 会杀死模型打转自救机制
+- [2026-07-13 15:30] 配置白名单
+- [2026-07-13 15:38] 继续
+- [2026-07-13 15:57] **全量 pytest**：`uv run pytest -q` → **93 passed**（1.10s；新增 7 + 存量 86，与 notes/11 §7 声称一致）。</result>
+- [2026-07-13 16:03] S10 收口面试
+- [2026-07-13 16:15] 3. 不对称设计共同说明, 防打转是 误报率 vs 止损速度的权衡
+- [2026-07-13 16:22] 1. 打转每次调用都是重复无产出, 最贵的账是 tokens账单和 会话上下文
+- [2026-07-13 16:28] 不自知」决定了打转的发现延迟——发现延迟直接乘在账单上。模型不会发现 系统不会发现
+- [2026-07-13 16:34]       ▎ ）。read 场景怕逃检所以宽进，write 场景怕误伤所以严出——两个方向相反的设计共存于同一个归一化函数，恰好证明这是逐工具的误报/漏报权衡，不是越严越好。
+- [2026-07-13 16:42] 1. 当场注入, 会破坏API的 tool_call和 tool_result配对的硬约束
+- [2026-07-13 16:47]       ]}
+- [2026-07-13 16:48] S2 摘要切点避开配对 / S7 恢复补 [interrupted] / S10 警告排队绕配对
+- [2026-07-13 16:55] 警告/硬停的分工, 是止损速度和误报率的权衡
+- [2026-07-13 16:59] 同一个设计方言：错误信息即修复路径, 惩罚是最后的手段
+- [2026-07-13 17:04]       正常返回」断言组合——不是「因为剥掉后 loop 见无工具调用就会收口」那句机制解释。
+- [2026-07-13 17:09]     - 产品版的正解不是 tokenizer，是供应商的 usage_metadata 差分累加（deer-flow 同款：input/output/total 三口径取最高占比）。为什么恰恰不用
+- [2026-07-13 17:13] 1. 产品参数： warn/hard  指标 打转率 硬停率 固定时间review 打转率和硬停率指标, 评估打转的高发场合和高发任务
+- [2026-07-13 17:14] 1. warn/hard 划线依据 = 误报率 vs 止损速度：太低误伤合法重试（用户体感 agent 动不动放弃），太高止损太慢（老板体感账单爆炸）
+- [2026-07-13 17:15] 产品层面保证 防御层可观测可解释
+- [2026-07-13 17:16] 1. 不违约——续跑属同一任务，打转前科不因续跑清零

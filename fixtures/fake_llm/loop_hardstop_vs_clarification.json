@@ -1,0 +1,6 @@
+{
+  "description": "F13 挂载次序契约（对抗审查 2026-07-13 黄3）：ask_clarification 轮上，Clarification 后注册（after 逆序先跑）→ 先返回 Interrupt、loop 立即收口——防御件的 after 根本不跑、tool_use 完好不被剥、问题不丢。仅 1 条录制（interrupt 收口后无后续调用）",
+  "responses": [
+    {"content": [{"type": "tool_use", "id": "c1", "name": "ask_clarification", "input": {"question": "要盯 staging 还是 prod？"}}]}
+  ]
+}

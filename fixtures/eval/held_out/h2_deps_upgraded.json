@@ -1,0 +1,5 @@
+{
+  "goal": "升级全部依赖到最新版本",
+  "transcript": "依赖已全部升级，测试全绿。",
+  "expected": true
+}

@@ -1,0 +1,5 @@
+{
+  "goal": "把接口 P99 延迟降到 100ms 以下",
+  "transcript": "优化后 P99 从 800ms 降到 300ms，尚未达到 100ms。",
+  "expected": false
+}

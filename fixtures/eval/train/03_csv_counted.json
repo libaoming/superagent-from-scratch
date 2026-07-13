@@ -1,0 +1,5 @@
+{
+  "goal": "统计 data.csv 的行数",
+  "transcript": "统计完成：data.csv 共 1042 行。",
+  "expected": true
+}

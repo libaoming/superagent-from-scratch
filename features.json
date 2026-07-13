@@ -334,6 +334,65 @@
         "F01_agent_loop",
         "F03_middleware_protocol"
       ]
+    },
+    {
+      "id": "F12_eval_loop",
+      "slice": "S9",
+      "status": "in_progress",
+      "verify": {
+        "type": "command",
+        "run": "uv run pytest tests/test_s9_eval.py -q",
+        "fixture": "fixtures/eval/train/ + fixtures/eval/held_out/ + fixtures/fake_llm/eval_verdicts.json"
+      },
+      "verify_notes": "2026-07-12 代码侧绿：test_s9_eval 5 passed / 全量 85 passed（存量 80 零改动同绿）/ src 1140 行。教学弧有账可查：evals/results.tsv 基线 0.8（startswith 假阳性，04/08 两案例实锤 Y1）→ 修一处（整词判定 + GOAL_JUDGE_PROMPT 抽常量）→ 1.0；真实模型 E2E（e2e_s9_eval.py，ClaudeCLILLM）train 1.0 / held_out 1.0 已记账。收口序列（notes/10→对抗审查→收口面试）未走，停 in_progress。",
+      "related": {
+        "specs": [
+          "SPEC.md#eval-loop"
+        ],
+        "code": [
+          "src/evals.py",
+          "src/goal.py"
+        ],
+        "docs": [
+          "teach/reference/eval-loop-exam-points.html（考点+deer-flow 实况已核实）"
+        ]
+      },
+      "affected": "带标签案例（train ~10 / held_out ~5，含 YESTERDAY 型陷阱）→ runner 对每案例构造 State 调 _goal_met → 程序化 accuracy + per_case → append_result 落 TSV（路径调用方给）→ 收口 E2E：基线分 → 修一处（startswith 收紧整词判定）→ 复跑分数涨、TSV 两行留痕；GOAL_JUDGE_PROMPT 从 _goal_met 抽成模块常量（签名不动，存量测试零改动）",
+      "out_of_scope": "不做 agent 自改 prompt/NEVER STOP/固定预算（autoevolve 产品版）；不做 LLM-as-judge 标量分与 rubric 文件（有 ground truth 就程序判定）；不做 --runs 去噪、judge 档位隔离、with-vs-without delta、tokens/时间聚合、best 版本保留器；不改 run_with_goal 续跑协议",
+      "blocking": [
+        "F07_todo_goal"
+      ]
+    },
+    {
+      "id": "F13_loop_detection",
+      "slice": "S10",
+      "status": "passing",
+      "verify": {
+        "type": "command",
+        "run": "uv run pytest tests/test_s10_loop_detection.py -q",
+        "fixture": "fixtures/fake_llm/loop_repeat_calls.json + loop_self_rescue + loop_offset_bucket + loop_write_full_args + token_budget_overflow（预算硬停复用 endless_tool_calls）"
+      },
+      "verify_notes": "2026-07-13 verify 真跑：test_s10_loop_detection 9 passed / 全量 95 passed（存量 86 零改动同绿=C4 第十次实证）/ src 1330 行。对抗审查 0 红 6 黄全清（实例生命周期契约化 + 挂载次序 2 行为钉 + window≥1 断言 + checkpoint 注释例外）。收口面试通过（记录 0021：五考点+突袭全过，「只问证据」第五验满分）。滑窗=实例变量（课上拍板 A）。tag sfs-s10",
+      "related": {
+        "specs": [
+          "SPEC.md#loop-detection"
+        ],
+        "code": [
+          "src/middlewares/",
+          "src/middleware.py",
+          "src/loop.py（只读——终止条件 1 复用，预计零改动）"
+        ],
+        "docs": [
+          "notes/03-s2-middlewares.md（顺序语义前作）",
+          "teach/reference/season3-plan.html（开季设计稿）"
+        ]
+      },
+      "affected": "LoopDetection（~100 行）：after_model 归一化 hash（read 分桶/write 全参不对称）+ 滑窗计数 → ≥warn 阈值把 [loop warning] 排队、下一轮 before_model 延迟注入（S2 配对坑第三现身）→ ≥hard 阈值 after_model 剥 tool_use 逼终止条件 1 自然收口。加餐 TokenBudget（~60 行，D2=B）：同缝①件，字符数近似计费 + 双档 warn/hard，共享延迟注入与硬停基建。滑窗计数=middleware 实例变量（2026-07-13 课上拍板 A：防御件工作内存非任务现场，恢复归零=灵敏度降级非任务错误，零 S7 联动）。实现：src/middlewares/two_tier.py（共享基建 TwoTierGuard：双档断言 warn<hard + 延迟注入 + 剥 tool_use）+ loop_detection.py + token_budget.py，共 177 行（对抗审查 6 黄落地后：契约 docstring + window 断言 + 2 顺序测试）",
+      "out_of_scope": "不做频率层（同工具类型计数）；不做线程 LRU/并发锁/per-tool 覆写/Pydantic 配置；不做多供应商 finish_reason 兼容；不做 usage_metadata 真实计费与子 agent 用量回写（TokenUsageMiddleware 358 行，对照表升级路径）；不改 loop 终止分支、不加异常路径",
+      "blocking": [
+        "F03_middleware_protocol",
+        "F04_core_middlewares"
+      ]
     }
   ]
 }

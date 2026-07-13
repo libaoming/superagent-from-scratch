@@ -1,0 +1,85 @@
+{
+  "description": "F12：train 10 案例的 goal 判定录制（按案例文件名序）。04/08 为 YESTERDAY 前缀词对抗措辞——startswith('YES') 假阳性（S5 审查 Y1 实锤），整词判定修复后 accuracy 0.8→1.0；07 的「YES！」反向钉住修复不过度收紧。",
+  "responses": [
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "YES"
+        }
+      ]
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "NO"
+        }
+      ]
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "YES，统计已完成。"
+        }
+      ]
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "YESTERDAY 已完成 staging 部署，但生产环境尚未部署，目标未达成。"
+        }
+      ]
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "NO，还有两节未翻译。"
+        }
+      ]
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "YES"
+        }
+      ]
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "YES！用例齐全且全绿。"
+        }
+      ]
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "YESTERDAY 完成了两个竞品，但第三个未调研，目标未达成。"
+        }
+      ]
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "YES"
+        }
+      ]
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "NO——有进展但未达标。"
+        }
+      ]
+    }
+  ]
+}

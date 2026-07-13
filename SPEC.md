@@ -180,6 +180,37 @@ task(description: str, prompt: str) -> str   # 返回 = subagent 最终文本，
 
 **砍**（deer-flow 产品化 ~150 行）：catalog_hash 防目录漂移、fail-closed RuntimeError、pydantic 配置开关、`+prefix`/regex 降级、MCP 标签模块、subagent 镜像装配、晋升驱逐/降级。
 
+### eval 闭环 {#eval-loop}（第二季 · S9）
+
+核心 aha：**agent 的输出开放、非确定，eval 不是 `assert equals`，是「量分 + 记账 + 一次一改 + 不涨回退」**。前八刀是「怎么造」，这刀是「怎么知道造对了、怎么让它系统性变好」。第一个被评对象 = `goal.py` 的 `_goal_met`——**它本身就是个 LLM judge（YES/NO），却从没被量化测过**：S5 对抗审查记过 `startswith("YES")` 对「YESTERDAY 开头回复」的假阳性（Y1），正是「没有 eval 的 judge」躲过的那种坑。
+
+**落点（2026-07-12 拍板 · M1=_goal_met+程序化 accuracy、M2=量分+记账+手动一次一改、M3=prompt 抽常量）**：
+- **M1 被测对象与打分**：被测 = `_goal_met`；案例带 ground truth 标签（该判达成/不该判达成），打分 = **程序化 accuracy**。教学点：**能程序判定就不用 LLM-as-judge**——judge 留给无标签的主观质量（摘要保真度等，见对照表）；备选「summarization 保真度 + judge 标量分」被否决（引入 judge 档位/噪声/去噪三件复杂度，教学收口难）。
+- **fixture 分两批（防过拟合命门）**：`fixtures/eval/train/*.json`（~10，可见、拿来优化）+ `fixtures/eval/held_out/*.json`（~5，优化时不可见、只收口跑）。案例形状 `{goal, transcript, expected}`，覆盖达成/未达成/部分达成/YESTERDAY 型措辞陷阱。判据：**train 涨、held_out 不涨 = 过拟合，回退**。
+- **runner + TSV 记账**（`src/evals.py`）：对每案例构造 State → 调 `_goal_met(llm, state, goal)` → 与 expected 比对 → `{accuracy, per_case}`；`append_result` 落一行 TSV（git hash 或标注名 + split + n_cases + accuracy）——分数可回溯、改动可归因。TSV 路径调用方给（S7 checkpoint 同款哲学）。
+- **M2 闭环范围 = 手动一次一改**：**离线对抗录制**跑基线分 → 修**一处**（YESTERDAY 假阳性：`startswith` 收紧为整词判定）→ 复跑分数涨 → TSV 留痕；收口 E2E 另记真实模型准确率两行（train/held_out）。基线弧走录制不走 E2E 是诚实选择：真实模型被「只回 YES 或 NO」约束、几乎不吐 YESTERDAY 型措辞，假阳性坑在真实跑分里不显形——录制代表「judge 解析必须扛住的自由文本」（对抗审查 2026-07-12 黄1 说实）。**砍**：agent 自改 prompt、NEVER STOP、固定预算、`--runs 3` 去噪、judge rubric 文件（autoevolve 产品版形态，走对照表升级路径）。
+- **M3 缝**：判定 prompt 从 `_goal_met` 函数体抽成 `goal.py` 模块级常量 `GOAL_JUDGE_PROMPT`（~2 行外科手术，签名不动、存量测试零改动）——eval 围着转的「单可变文件」教学版落点，进化改这里、TSV 用 git hash 归因。
+- **离线/在线分界（C3 不破）**：eval harness 自身（loader/scorer/TSV/两批分离/YESTERDAY 解析钉死）用 FakeLLM 录制 verdicts 离线单测；**真实跑分是收口 E2E**（ClaudeCLILLM 过 train 批），与 S1 e2e 同位。
+
+**deer-flow 对照（子 agent 核实 2026-07-09）**：**本体（★76k）几无 agent quality eval**——318 个 pytest + Playwright e2e 全是软件正确性测试，CI 无 judge/benchmark job；范式反而在它 vendored 的第三方 skill-creator 里（fixture → `claude -p` → grader.md 逐断言 → pass_rate 聚合 → 自动改 description → 再跑，带 train/holdout）。教学版取 autoevolve 的骨（五要素）+ skill-creator 的打分形态（逐案例可编程断言 → accuracy）。
+
+**砍**（autoevolve/skill-creator 产品化）：agent 自改环与通宵预算、judge 档位隔离与抽检、with-vs-without delta、tokens/时间聚合、best 版本保留器。
+
+### loop detection + token budget {#loop-detection}（第三季 · S10）
+
+核心 aha：**agent 最贵的失败不是崩溃，是打转**——崩溃有 traceback，打转只有账单。防打转 = 把「重复」变成可检测信号（tool_use 归一化 hash + 滑动窗口计数）+ 把干预做成两档（**警告**注入提醒教自救 → **硬停**剥 tool_use 逼自然收口）。加餐 TokenBudget（2026-07-12 拍板 D2=B 进主干）：同一套「双档阈值 + 延迟注入」基建的第二住户——检测对象从「重复」换成「花费」，一份基建教两件。
+
+**落点（2026-07-12 拍板 D1=A / D2=B）**：
+- **M1 挂载 = 缝①（LoopDetection middleware，~100 行）**：`after_model` 检测记账（此刻本轮 tool_use 已知）——归一化 hash：取 salient 字段（path/command/query 类），**read_file 按行号 200 行分桶**（防「换行号刷读」逃检）、**write 类反而 hash 全参**（防误报拦住合法的多次小改）——不对称性是考点；排序 → hash → 滑窗（默认 20）计数。**警告延迟到下一轮 `before_model` 注入**（`[loop warning]` user 消息教自救）：为什么不能 after_model 当场插——会夹在 tool_use 与 tool_result 之间，API 配对硬约束直接炸（**S2 配对坑第三次现身**；deer-flow loop_detection_middleware.py:18-38 注释自标全文件最有教学价值段落）。
+- **M2 硬停 = 剥 tool_use 不抛异常**：计数 ≥hard 阈值时在 after_model 把本轮 assistant 的 tool_use 块剥掉（留/补文本说明）→ loop 见无工具调用走**终止条件 1 自然收口**——不加终止分支、不抛异常，复用既有终止语义（deer-flow 同款：剥 tool_calls + 改 finish_reason）。
+- **加餐 TokenBudget（~60 行）**：同缝①件，`after_model` 累加花费、双档 warn（延迟注入 `[budget warning]`）/hard（剥 tool_use 硬停）——与 LoopDetection 共享延迟注入与硬停两块基建。**计费口径教学版 = 消息字符数近似**（fixture 可控、离线可测）；产品版 = 供应商 `usage_metadata` 差分累加（不用 tokenizer 库，deer-flow 同款），走对照表升级路径。与 S2 Summarization 互补正交：Summarization 管「窗口装不装得下」，Budget 管「这一 run 花了多少」。
+- **滑窗计数放哪（开工拍板题）**：middleware 实例变量（重启清零，checkpoint 恢复后计数归零——说实即可）vs State 新字段（跨恢复存活，但触发 S7 字段表第三次联动）。**默认推荐实例变量**，留理论课与用户合议（教学环反哺开发候选）。
+- **注册顺序语义（第三季必考）**：缝①住户增至 7+ 件——谁先看到模型输出、谁的警告先注入，顺序表是 S2「顺序语义」的毕业考（deer-flow 对应：Safety 必须后注册先剥 tool_calls 再让 Loop 记账）。
+
+**deer-flow 对照（子 agent 核实 2026-07-12）**：loop_detection_middleware.py **612 行**（内核 ~90）——两层检测（hash 层 + 频率层「同工具类型 30 警/50 停」）、线程级 LRU、pending 警告上限、Pydantic 配置；token_budget_middleware.py **290 行**（内核 ~60）——usage_metadata 差分累加 + input/output/total 三口径取最高占比。
+
+**砍**：频率层、线程 LRU 与并发锁、per-tool 阈值覆写、Pydantic 配置模块、多供应商 finish_reason 兼容、TokenUsageMiddleware 子 agent 用量回写（358 行，账算不全说实即可）。
+
 ## 关键约束
 
 | # | 约束 | 检验方式 |

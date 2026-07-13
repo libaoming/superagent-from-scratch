@@ -1,0 +1,5 @@
+label	split	n	accuracy
+baseline-startswith-yes	train	10	0.8
+fix-yes-word-boundary	train	10	1.0
+e2e-claude-cli	train	10	1.0
+e2e-claude-cli	held_out	5	1.0

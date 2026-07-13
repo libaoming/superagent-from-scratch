@@ -1,0 +1,8 @@
+{
+  "description": "F13 加餐预算警告线：测试设 warn_chars=1（任意花费即过警告线）/hard_chars=天文数字——每个工具轮 after_model 排队一条 [budget warning]（单槽），共注入 2 条后自然收口、不硬停。预算硬停场景复用 endless_tool_calls.json（warn=1/hard=2 首轮即剥）。3 条录制应恰好耗尽",
+  "responses": [
+    {"content": [{"type": "tool_use", "id": "t1", "name": "search", "input": {"query": "资料 A"}}]},
+    {"content": [{"type": "tool_use", "id": "t2", "name": "search", "input": {"query": "资料 B"}}]},
+    {"content": [{"type": "text", "text": "花费可控，任务完成。"}]}
+  ]
+}

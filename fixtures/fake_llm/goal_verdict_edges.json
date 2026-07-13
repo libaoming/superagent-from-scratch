@@ -1,0 +1,21 @@
+{
+  "description": "F12：_goal_met 解析边界两连发（录制=全局调用序）——responses[0] YESTERDAY 前缀词应判 False（Y1 假阳性修复），responses[1] 带标点整词 YES 应判 True（防过度收紧）。",
+  "responses": [
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "YESTERDAY 已完成。"
+        }
+      ]
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "YES！已达成。"
+        }
+      ]
+    }
+  ]
+}

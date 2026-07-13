@@ -1,0 +1,5 @@
+{
+  "goal": "把服务部署到生产环境",
+  "transcript": "已在 staging 完成部署并验证，生产环境还没有动。",
+  "expected": false
+}

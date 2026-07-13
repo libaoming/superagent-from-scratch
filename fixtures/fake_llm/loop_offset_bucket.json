@@ -1,0 +1,8 @@
+{
+  "description": "F13 宽进防线（防换行号刷读逃检）：read_doc 同 path、offset 0/100/199 全落 200 行桶 0——归一化后视为相同调用，warn=2/hard=3 下第 3 轮硬停。若按原始参数 hash 则三次互不相同、永不触发（本 fixture 反证归一化必要性）",
+  "responses": [
+    {"content": [{"type": "tool_use", "id": "b1", "name": "read_doc", "input": {"path": "doc.md", "offset": 0}}]},
+    {"content": [{"type": "tool_use", "id": "b2", "name": "read_doc", "input": {"path": "doc.md", "offset": 100}}]},
+    {"content": [{"type": "tool_use", "id": "b3", "name": "read_doc", "input": {"path": "doc.md", "offset": 199}}]}
+  ]
+}

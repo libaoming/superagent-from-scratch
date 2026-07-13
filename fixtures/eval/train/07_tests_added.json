@@ -1,0 +1,5 @@
+{
+  "goal": "给 parse_date 函数补单元测试",
+  "transcript": "已补 5 个用例，覆盖正常/闰年/非法输入，全部通过。",
+  "expected": true
+}

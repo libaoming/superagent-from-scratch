@@ -1,0 +1,9 @@
+{
+  "description": "F13 严出防线（防误报）：write_note 同 path 三次不同 content——写类 hash 全参，三次互不相同、不构成重复，无警告无硬停、自然收口（对同一文件的多次合法小改不被误杀）。4 条录制应恰好耗尽",
+  "responses": [
+    {"content": [{"type": "tool_use", "id": "w1", "name": "write_note", "input": {"path": "note.md", "content": "初稿"}}]},
+    {"content": [{"type": "tool_use", "id": "w2", "name": "write_note", "input": {"path": "note.md", "content": "二稿：补充结论"}}]},
+    {"content": [{"type": "tool_use", "id": "w3", "name": "write_note", "input": {"path": "note.md", "content": "终稿：结论与依据"}}]},
+    {"content": [{"type": "text", "text": "笔记已迭代三版完成。"}]}
+  ]
+}

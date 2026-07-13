@@ -1,0 +1,5 @@
+{
+  "goal": "修复登录 bug 并让测试通过",
+  "transcript": "已定位问题在 token 过期逻辑，还未修改代码，测试仍然红着。",
+  "expected": false
+}

@@ -1,0 +1,8 @@
+{
+  "description": "F13 主流程：打转模型——同一 search(query) 连打 3 轮。测试设 warn=2/hard=3：第 2 次重复在 after_model 排队警告、下轮 before_model 注入 [loop warning]（延迟注入，绕配对约束）；第 3 次触发硬停剥 tool_use（第 3 条的 text 块应存活=「留」，停机说明=「补」）走终止条件 1。3 条录制应恰好耗尽",
+  "responses": [
+    {"content": [{"type": "text", "text": "我来查一下。"}, {"type": "tool_use", "id": "l1", "name": "search", "input": {"query": "部署失败原因"}}]},
+    {"content": [{"type": "tool_use", "id": "l2", "name": "search", "input": {"query": "部署失败原因"}}]},
+    {"content": [{"type": "text", "text": "再查一次应该就有了。"}, {"type": "tool_use", "id": "l3", "name": "search", "input": {"query": "部署失败原因"}}]}
+  ]
+}
