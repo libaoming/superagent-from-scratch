@@ -11,6 +11,11 @@ import subprocess
 from pathlib import Path
 
 
+def render_numbered(text: str) -> str:
+    """cat -n 同款渲染。ReadFileTool 与 ReadBeforeWrite 版本门共用——门比对的是「模型看到的同一视图」（防渲染逻辑双份漂移，S11）。"""
+    return "".join(f"{i:>6}\t{line}\n" for i, line in enumerate(text.splitlines(), start=1))
+
+
 class BashTool:
     name = "bash"
     # description 是给模型看的契约：不承诺执行目录（实际 = 进程 cwd；测试与 E2E 均从仓库根启动）
@@ -50,10 +55,7 @@ class ReadFileTool:
     }
 
     def run(self, *, path: str) -> str:
-        text = Path(path).read_text()
-        return "".join(
-            f"{i:>6}\t{line}\n" for i, line in enumerate(text.splitlines(), start=1)
-        )
+        return render_numbered(Path(path).read_text())
 
 
 class WriteFileTool:

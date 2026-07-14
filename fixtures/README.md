@@ -37,4 +37,10 @@ verify 引用的 fixture 都在此。**fixture 先于代码**：feature 的 veri
 | `fake_llm/loop_write_full_args.json` | ✅ | F13 严出防线：write_note 同 path 三次不同 content 全参互异→零检出（防误报合法小改） |
 | `fake_llm/token_budget_overflow.json` | ✅ | F13 加餐：warn=1 每工具轮注入 [budget warning]×2→自然收口；预算硬停复用 endless_tool_calls（hard=2 首轮即剥） |
 | `fake_llm/loop_hardstop_vs_clarification.json` | ✅ | F13 挂载次序契约（审查黄3）：ask_clarification 轮 Interrupt 先行收口，防御件 after 不跑、tool_use 不被剥（仅 1 条录制，interrupt 收口后无后续调用） |
+| `fake_llm/gate_blind_write_rescue.json` | ✅ | F14 主流程自救弧：盲写被拦（教学式 error）→ read → 重试放行（真文件 gate_scratch.md 由测试 setup/teardown） |
+| `fake_llm/gate_write_write.json` | ✅ | F14「写不刷新 mark」零实现行：读→写放行→再写被拦（旧 read hash 自动失配） |
+| `fake_llm/gate_stale_read.json` | ✅ | F14 读旧版被拦：跨两次 run 外部改档（「录制=全局调用序」跨 run 消费） |
+| `fake_llm/gate_summarization_decay.json` | ✅ | F14 设计不变量（纠错版）：压缩删 read 记录→写被拦逼重读→再写放行；responses[0] 归压缩调用 |
+| `fake_llm/gate_fail_open.json` | ✅ | F14 fail-open（拍板 A）：二进制文件门读不了→放行 + [version-gate bypassed] 留痕（教学环反哺第四例） |
+| `fake_llm/gate_new_file.json` | ✅ | F14 新文件放行：无旧内容可覆盖、干净放行不留痕（防御面收窄非 fail-open） |
 | `workspace/data.md` | ✅ | F02：read_file/bash 真实执行语料 |

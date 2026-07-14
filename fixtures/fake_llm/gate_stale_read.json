@@ -1,0 +1,9 @@
+{
+  "description": "F14 读旧版被拦：run1 读文件收口 → 测试在两次 run 之间外部改档 → run2（同 state 同 llm 续跑，「录制=全局调用序」跨 run 消费同一序列）直接写被拦——读过但读的是旧版，hash 过期。断言磁盘保持外部修改的内容。4 条录制应恰好耗尽",
+  "responses": [
+    {"content": [{"type": "tool_use", "id": "s1", "name": "read_file", "input": {"path": "fixtures/workspace/gate_scratch.md"}}]},
+    {"content": [{"type": "text", "text": "读完了，当前是 v1。"}]},
+    {"content": [{"type": "tool_use", "id": "s2", "name": "write_file", "input": {"path": "fixtures/workspace/gate_scratch.md", "content": "基于旧知识的改写"}}]},
+    {"content": [{"type": "text", "text": "收到拦截提示，先停在这里。"}]}
+  ]
+}

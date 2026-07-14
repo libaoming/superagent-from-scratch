@@ -393,6 +393,38 @@
         "F03_middleware_protocol",
         "F04_core_middlewares"
       ]
+    },
+    {
+      "id": "F14_read_before_write",
+      "slice": "S11",
+      "status": "passing",
+      "verify": {
+        "type": "command",
+        "run": "uv run pytest tests/test_s11_read_before_write.py -q",
+        "fixture": "fixtures/fake_llm/gate_blind_write_rescue.json + gate_write_write + gate_stale_read + gate_summarization_decay（设计不变量纠错版）+ gate_fail_open + gate_new_file + gate_truncated_read（审查红1 钉）——7 个全部已造，真文件 gate_scratch.md 由测试 setup/teardown"
+      },
+      "verify_notes": "2026-07-14 收口面试通过（记录 0023：Q3/Q4/Q5/突袭全满分级）后真跑：test_s11 7 passed（含审查红1 钉 test_truncated_read_bypasses_gate_not_deadlock）/ 全量 102 passed（存量 95 零改动同绿=C4 第 11 次实证）/ src 1420 行。notes/12 ✅ CONTEXT 回填 ✅ 对抗审查 1 红 5 黄全清 ✅。tag sfs-s11",
+      "related": {
+        "specs": [
+          "SPEC.md#read-before-write"
+        ],
+        "code": [
+          "src/middlewares/",
+          "src/middleware.py",
+          "src/tools.py（内部重构：抽 render_numbered，协议签名不动）",
+          "src/loop.py（只读——预计零改动，C4 连胜候选）"
+        ],
+        "docs": [
+          "notes/03-s2-middleware.md（Summarization 联动语义前作）",
+          "teach/reference/season3-plan.html（S11 切片卡）"
+        ]
+      },
+      "affected": "ReadBeforeWrite（~75 行）：缝① wrap_tool_call 拦「写已存在文件」——反向扫 messages（id→tool_use 配对）找该 path 最近 read 的渲染文本 hash，与磁盘当前内容同款渲染比对；没读过/hash 失配→教学式 error（guard 家族第三员），新文件放行。「写不刷新 mark」=hash 比对自然推论零实现行。fail-open 兜底（门读不了文件→放行）。state 构造注入（一个实例=一个任务契约同 S10）。tools.py 抽 render_numbered 共用（防渲染双份漂移）",
+      "out_of_scope": "不做并发锁/async 双轨/多沙箱路径兼容/additional_kwargs 盖章（deer-flow 产品件）；不给 State 加读记录字段（状态必须寄生 messages——压缩联动语义是本刀核心 aha）；不拦新文件写；不做写类工具白名单配置",
+      "blocking": [
+        "F03_middleware_protocol",
+        "F04_core_middlewares"
+      ]
     }
   ]
 }

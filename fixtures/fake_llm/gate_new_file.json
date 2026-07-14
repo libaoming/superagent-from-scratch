@@ -1,0 +1,7 @@
+{
+  "description": "F14 新文件放行：写不存在的 path 直接放行不比对——没有旧内容可覆盖，拦了纯误伤（防御面收窄到真实风险）。测试 teardown 删除产物。2 条录制应恰好耗尽",
+  "responses": [
+    {"content": [{"type": "tool_use", "id": "n1", "name": "write_file", "input": {"path": "fixtures/workspace/gate_new_note.md", "content": "全新文件，无需先读"}}]},
+    {"content": [{"type": "text", "text": "新文件已创建。"}]}
+  ]
+}

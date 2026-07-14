@@ -6,6 +6,7 @@ Summarization 只管压历史；loop 与工具零改动（C4）。
 
 from src.middlewares.clarification import AskClarification, Clarification
 from src.middlewares.loop_detection import LoopDetection
+from src.middlewares.read_before_write import ReadBeforeWrite
 from src.middlewares.summarization import Summarization
 from src.middlewares.todo import TodoMiddleware, WriteTodos
 from src.middlewares.token_budget import TokenBudget
@@ -16,6 +17,7 @@ __all__ = [
     "AskClarification",
     "Clarification",
     "LoopDetection",
+    "ReadBeforeWrite",
     "Summarization",
     "TodoMiddleware",
     "TokenBudget",

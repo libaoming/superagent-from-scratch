@@ -1,0 +1,9 @@
+{
+  "description": "F14「写不刷新 mark」（零实现行的自然推论）：读→写放行→紧接着再写被拦——首写后磁盘已变，messages 里最近 read 的 hash 自动失配，连续两写之间必须重读。断言磁盘停在第二版。4 条录制应恰好耗尽",
+  "responses": [
+    {"content": [{"type": "tool_use", "id": "w1", "name": "read_file", "input": {"path": "fixtures/workspace/gate_scratch.md"}}]},
+    {"content": [{"type": "tool_use", "id": "w2", "name": "write_file", "input": {"path": "fixtures/workspace/gate_scratch.md", "content": "第二版"}}]},
+    {"content": [{"type": "tool_use", "id": "w3", "name": "write_file", "input": {"path": "fixtures/workspace/gate_scratch.md", "content": "第三版（未重读）"}}]},
+    {"content": [{"type": "text", "text": "两次改写完成。"}]}
+  ]
+}

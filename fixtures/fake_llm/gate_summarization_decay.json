@@ -1,0 +1,10 @@
+{
+  "description": "F14 设计不变量（2026-07-13 纠错版：压缩后写被拦、逼重读）：初始 messages 含对 gate_scratch.md 的 read 配对（磁盘未变，若无压缩本可放行——反证被拦原因是压缩）→ Summarization 把 read 记录压进摘要 → write 被拦 → 重读 → 再写放行。⚠️ 录制=全局调用序：responses[0] 归压缩调用消耗。5 条录制应恰好耗尽",
+  "responses": [
+    {"content": [{"type": "text", "text": "[摘要] 早前对话：读过工作区若干文件并讨论了改写方案。"}]},
+    {"content": [{"type": "tool_use", "id": "d1", "name": "write_file", "input": {"path": "fixtures/workspace/gate_scratch.md", "content": "压缩后直接改写"}}]},
+    {"content": [{"type": "tool_use", "id": "d2", "name": "read_file", "input": {"path": "fixtures/workspace/gate_scratch.md"}}]},
+    {"content": [{"type": "tool_use", "id": "d3", "name": "write_file", "input": {"path": "fixtures/workspace/gate_scratch.md", "content": "重读后的改写"}}]},
+    {"content": [{"type": "text", "text": "重读后完成改写。"}]}
+  ]
+}

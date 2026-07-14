@@ -1,0 +1,9 @@
+{
+  "description": "F14 主流程自救弧：盲写已存在文件被版本门拦（教学式 error 教先读）→ 模型 read → 重试 write 放行真写。测试 setup 造 fixtures/workspace/gate_scratch.md（v1），断言首写被拦时磁盘仍 v1、终写后磁盘=新内容。4 条录制应恰好耗尽",
+  "responses": [
+    {"content": [{"type": "tool_use", "id": "g1", "name": "write_file", "input": {"path": "fixtures/workspace/gate_scratch.md", "content": "v2：盲写版本"}}]},
+    {"content": [{"type": "tool_use", "id": "g2", "name": "read_file", "input": {"path": "fixtures/workspace/gate_scratch.md"}}]},
+    {"content": [{"type": "tool_use", "id": "g3", "name": "write_file", "input": {"path": "fixtures/workspace/gate_scratch.md", "content": "v2：读后改写"}}]},
+    {"content": [{"type": "text", "text": "已按流程完成改写。"}]}
+  ]
+}

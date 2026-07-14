@@ -1,0 +1,8 @@
+{
+  "description": "F14 审查红1 钉：ToolOutputBudget 截断读记录 × 版本门同挂——截断记录与磁盘全文永不可比，硬拦会让「重读→再写」也被拦（死循环指路牌真实现形）。修复后语义：检出截断标注 → fail-open 留痕放行。2 条录制应恰好耗尽",
+  "responses": [
+    {"content": [{"type": "tool_use", "id": "t1", "name": "read_file", "input": {"path": "fixtures/workspace/gate_scratch.md"}}]},
+    {"content": [{"type": "tool_use", "id": "t2", "name": "write_file", "input": {"path": "fixtures/workspace/gate_scratch.md", "content": "精简后的内容"}}]},
+    {"content": [{"type": "text", "text": "大文件已精简。"}]}
+  ]
+}

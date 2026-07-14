@@ -1,0 +1,7 @@
+{
+  "description": "F14 fail-open（拍板 A + 留痕缓解=教学环反哺第四例）：目标文件是二进制（门 read_text 抛 UnicodeDecodeError 读不了）→ 门放行并在结果前附 [version-gate bypassed] 警告标注（P3 可观测：静默放行的缓解）→ write_text 覆盖成功。2 条录制应恰好耗尽",
+  "responses": [
+    {"content": [{"type": "tool_use", "id": "f1", "name": "write_file", "input": {"path": "fixtures/workspace/gate_binary.bin", "content": "清理为文本内容"}}]},
+    {"content": [{"type": "text", "text": "已覆盖为文本。"}]}
+  ]
+}

@@ -211,6 +211,20 @@ task(description: str, prompt: str) -> str   # 返回 = subagent 最终文本，
 
 **砍**：频率层、线程 LRU 与并发锁、per-tool 阈值覆写、Pydantic 配置模块、多供应商 finish_reason 兼容、TokenUsageMiddleware 子 agent 用量回写（358 行，账算不全说实即可）。
 
+### read before write {#read-before-write}（第三季 · S11）
+
+核心 aha：**「读过」不存路径集合，存内容 hash**——盲写（没读就写）与读旧版（读过但磁盘已变）是两种事故、一个门拦住；且**状态寄生在 `state.messages` 上**（不开新字段、不用实例变量）——读记录被 Summarization 压掉时门自动失效，**两个 middleware 零协议耦合却语义联动**。deer-flow 对照：read_before_write_middleware.py 265 行（内核 ~70），立项依据是真实事故 issue #3857（同段落盲写追加 5 遍）。
+
+**落点（2026-07-13 理论课 0012 拍板 · fail-open=A 落定）**：拍板判据全文见 learning-records/0022——版本门防「模型犯错」非「能力越权」，漏过最坏=一次可恢复的盲写（退化回没有门），误拦最坏=任务卡死+「死循环指路牌」（门叫模型先 read，门读不了的模型多半也读不了）；被否的 fail-closed 最强论点（读不了=异常信号、环境最可疑时最该拦）被双账压过：写入层有 ToolErrorHandling 兜底（各层各管各的）+ 静默放行可用留痕缓解（放行附警告标注为 C5 实现候选，教学环反哺第四例候选）。
+- **M1 挂载 = 缝① `wrap_tool_call` 拦「写已存在文件」**：write 类调用到已存在 path 时，反向扫 `state.messages`（先建 tool_use id→(name,input) 映射再配对 tool_result）找该 path **最近一次 read 的渲染文本**，与「磁盘当前内容的同款渲染」比 hash——没读过 / hash 失配（读的是旧版）→ 拦下回**教学式 error**「先 read_file 再重试」（guard 家族第三员：S7 `[interrupted]` / S8 DeferredGuard / 本件）。**新文件放行**（无旧内容可覆盖，拦了纯误伤——防御面收窄到真实风险）。state 走构造注入（Q1=A 家族，WriteTodos 先例；「一个实例=一个任务」契约同 S10）。
+- **比对视图 = 模型看到的同一视图**：`tools.py` 把 cat -n 渲染抽成模块级 `render_numbered(text)`（ReadFileTool 与本件共用，防双份漂移；tools.py 内部重构、协议签名不动）——比「渲染后文本」的 hash，render 对常规文本近似单射——换行符级差异不可辨（尾换行/\r\n/U+2028 被 splitlines 归一化，审查黄2 说实），漏检落在 fail-open 侧、足够本门语义。
+- **M2「写不刷新 mark」= 机制的自然推论，零实现行**：写成功后磁盘已变，messages 里最近 read 的 hash 自动失配 → 连续两写之间必须重读。**fail-open 兜底**：门自己读不了文件（权限/IO 异常）→ 放行——防御件不能比被防御的更脆；与 S8 guard 的 fail-closed 相反，判据是「误拦 vs 漏过哪个更贵」（版本门防模型犯错、误拦合法写更贵 → open；能力门防越权、漏过更贵 → closed），S10 误报/漏报权衡的同源延伸。
+- **跨切片设计不变量（必须钉成测试；2026-07-13 C5 推演纠错——初稿误写「压缩后放行」）**：Summarization 压缩删掉读记录后，先前的读证明随模型记忆一起失效——**写被拦、逼模型重读**。这是「状态寄生 messages」的语义联动：门的记忆与模型的记忆**同生共死**（模型忘了→门跟着忘→逼重读，恰好正确）；「压缩后还放行」反而是实例变量方案的病（门替模型记得已被遗忘的内容）。fixture 必须钉「压缩后写被拦」场景。对照 S5 todos（把状态**搬出** messages 逃离压缩）：本件把状态**藏进** messages 享受其生命周期——方向相反、各有正当性。
+
+**deer-flow 对照（子 agent 核实 2026-07-12）**：265 行——additional_kwargs 盖章传递读记录、并发锁、async 双轨、多沙箱路径兼容。
+
+**砍**：并发锁、async 双轨、多沙箱兼容、additional_kwargs 盖章（教学版直接反向扫 messages——正因为扫的是 messages，压缩联动语义才成立）。
+
 ## 关键约束
 
 | # | 约束 | 检验方式 |
