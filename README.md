@@ -1,10 +1,10 @@
 # superagent-from-scratch
 
-**A ~1,000-line, zero-framework, teaching-first rebuild of a modern SuperAgent harness** — distilled from the heart of [bytedance/deer-flow](https://github.com/bytedance/deer-flow) (★76k), readable in one afternoon.
+**An under-2,000-line, zero-framework, teaching-first rebuild of a modern SuperAgent harness** — distilled from the heart of [bytedance/deer-flow](https://github.com/bytedance/deer-flow) (★76k), built in public slice by slice.
 
 [中文版 README](README.zh-CN.md) · Teardown notes (Chinese) in [`notes/`](notes/)
 
-> ✅ **All five slices shipped** — built in public, slice by slice (tags `sfs-s1` … `sfs-s5`). 8/8 features passing, **62 offline tests green**, **~666 lines** of `src/`. Every slice ships with passing offline tests and a why-first teardown note.
+> ✅ **Season one (five slices) shipped (tags `sfs-s1` … `sfs-s5`), follow-up slices landed through S11** (tag `sfs-s11`) — 13/17 features passing, **122 offline tests green**, **~1,650 lines** of `src/` (budget ≤1,900). Every slice ships with passing offline tests and a why-first teardown note.
 
 ## Why this exists
 
@@ -14,7 +14,7 @@ If you want to truly understand how a general-purpose agent works in 2026, the m
 - **Tutorials are too shallow.** Most stop at "call function calling once" and never reach the hard parts: context management, defensive middlewares, subagent isolation, goal loops — exactly what separates a production agent from a demo.
 - **Frameworks hide the essence.** Mainstream implementations outsource the loop to LangChain/LangGraph. You see `create_agent(...)` — one line of black box — never the `messages → LLM → tools → append` cycle itself.
 
-This repo rewrites deer-flow's ~2,300-line heart into **≤1,500 lines of dependency-free Python** (runtime deps: `anthropic` + `pyyaml`, nothing else), unfolded across five linear slices, each with offline tests and a why-first teardown note.
+This repo rewrites deer-flow's ~2,300-line heart into **≤1,900 lines of dependency-free Python** (runtime deps: `anthropic` + `pyyaml`, nothing else), unfolded across linear slices, each with offline tests and a why-first teardown note. Season one's five slices build the skeleton; the slices after it keep cutting into the harness's deep water: memory, persistence, deferred tools, the eval loop, and the defensive-middleware family.
 
 ## Architecture
 
@@ -48,7 +48,7 @@ The 2026 consensus shape of a general-purpose agent — the same architecture as
         └─────────────────────────────────────────────┘
 ```
 
-## The five slices
+## Season one · the five slices
 
 Linear progression — each slice is a self-contained lesson with tests and a note:
 
@@ -60,6 +60,20 @@ Linear progression — each slice is a self-contained lesson with tests and a no
 | **S4** | Skills system (SKILL.md + slash activation) | The token economics of hot-pluggable capabilities: metadata is cheap (always-on), body is expensive (on-demand). | ✅ done ([note](notes/05-s4-skills.md), tag `sfs-s4`) |
 | **S5** | `write_todos` + goal re-run loop + `ask_clarification` HITL | "Long-horizon" is not a longer model — it's a goal loop the harness wraps around the model, with fuses. Interrupt = a normal close that saves state. | ✅ done ([note](notes/06-s5-long-task.md), tag `sfs-s5`) |
 
+## Follow-up slices · deep water (S6+, ongoing)
+
+With the skeleton done, the slices keep cutting into the genuinely hard parts of a harness — each still ships the same trio of tests + note + tag:
+
+| Slice | Theme and one-line claim | Status |
+|---|---|---|
+| **S6** | Long-term memory — the write path is a bypass outside the conversation loop; it persists across sessions, and reads back as just another user message | ✅ done ([note](notes/07-s6-memory.md), tag `sfs-s6`) |
+| **S7** | Checkpointing — per-step durability: the process may die, the task doesn't; recovery = load + append + re-enter the same `run()` | ✅ done ([note](notes/08-s7-checkpointer.md), tag `sfs-s7`) |
+| **S8** | Deferred tools — capabilities injected on demand: unloaded tools show only a name; a search hit promotes the full schema | ✅ done ([note](notes/09-s8-deferred-tools.md), tag `sfs-s8`) |
+| **S9** | The eval loop — turning "is the judge any good?" into a number that can go up | 🚧 landing ([note](notes/10-s9-eval-loop.md) is out) |
+| **S10** | Loop detection + budget gate — an agent's most expensive failure isn't crashing, it's spinning | ✅ done ([note](notes/11-s10-loop-detection.md), tag `sfs-s10`) |
+| **S11** | Read-before-write versioning — deterministic defense with state parasitic on messages | ✅ done ([note](notes/12-s11-read-before-write.md), tag `sfs-s11`) |
+| **S12–S13** | Execution safety's three orthogonal gates + safe truncation (non-empty tool_calls ≠ complete intent) | 🚧 in progress |
+
 ## deer-flow vs. this repo
 
 Every cut is documented with an upgrade path (see `SPEC.md` → *product vs. teaching*). Cutting is the curriculum:
@@ -67,8 +81,8 @@ Every cut is documented with an upgrade path (see `SPEC.md` → *product vs. tea
 | Capability | deer-flow (production) | This repo (teaching) |
 |---|---|---|
 | Loop engine | LangChain `create_agent` (black box) | Hand-written `run()`, ~50 lines, fully visible |
-| Context management | Summarization + DurableContext + TokenBudget + output caps | Summarization + ToolOutputBudget |
-| Defense middlewares | LoopDetection / ReadBeforeWrite / DanglingToolCall / Safety… | ToolErrorHandling (each cut one = one exercise) |
+| Context management | Summarization + DurableContext + TokenBudget + output caps | Summarization + ToolOutputBudget + TokenBudget |
+| Defense middlewares | LoopDetection / ReadBeforeWrite / DanglingToolCall / Safety… | ToolErrorHandling + LoopDetection + TwoTierGuard + ReadBeforeWrite (landing slice by slice; Safety in progress) |
 | Multi-provider | ModelFactory + vLLM/thinking/vision adapters | `LLMClient` protocol: Anthropic + FakeLLM + CLI adapter |
 | Tool sandboxing | Virtual path mapping + Docker sandbox | Bare subprocess, 60s timeout |
 | Subagent executor | Thread pool + SSE event streams | Synchronous recursion into the same loop |
@@ -88,7 +102,7 @@ All tests run against **recorded LLM fixtures** (`fixtures/fake_llm/*.json`): th
 ## Repo map
 
 ```
-src/            the implementation (budget: ≤1,500 lines total)
+src/            the implementation (budget: ≤1,900 lines total)
 tests/          one test suite per slice, all offline
 fixtures/       recorded LLM response sequences + file-op sandbox
 notes/          teardown notes (Chinese): how deer-flow does it →
@@ -100,7 +114,7 @@ features.json   single source of truth for slice/feature status
 
 ## Teaching disciplines (enforced, not aspirational)
 
-- **≤1,500 lines** in `src/` — exceeding it means replicating product features, not teaching the core. CI-checkable with `wc -l`.
+- **≤1,900 lines** in `src/` — exceeding it means replicating product features, not teaching the core. CI-checkable with `wc -l`.
 - **Tests are offline** — a missing API key never blocks `pytest`.
 - **Fixture-first** — fixtures are committed, reviewable data, not mocks.
 - **No copied code** — deer-flow is read-only reference; everything is rewritten from understanding (clean MIT).
